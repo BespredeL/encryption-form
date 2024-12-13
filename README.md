@@ -42,13 +42,33 @@ key. This package integrates seamlessly with Laravel Blade templates and require
 
 ## Usage
 
+### Middleware
+
+```php
+Add the middleware to your Kernel
+
+protected $middleware = [
+    // Other middleware
+    \Bespredel\EncryptionForm\Middleware\DecryptRequestFields::class
+]
+```
+
+or use it in a route group:
+
+```php
+Route::middleware('decrypt-form')->group(function () {
+    // Your code
+})
+```
+
 ### HTML Form Example
 
 In your Blade template:
 
 ```html
+
 <head>
-@encryptFormScripts
+    @encryptFormScripts
 </head>
 
 <form data-encrypt-form action="/submit" method="POST">
