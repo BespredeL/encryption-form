@@ -1,0 +1,44 @@
+{
+    "name": "bespredel/encryption-form",
+    "description": "Encrypt form fields with public key before sending to server",
+    "keywords": [
+        "laravel",
+        "form",
+        "encryption",
+        "security",
+        "public key"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aleksandr Kireev",
+            "email": "hello@bespredel.name",
+            "homepage": "https://bespredel.name",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^10.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5|^10.0|^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bespredel\\EncryptionForm\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bespredel\\EncryptionForm\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bespredel\\EncryptionForm\\EncryptionFormServiceProvider"
+            ]
+        }
+    }
+}
