@@ -46,7 +46,7 @@ key. This package integrates seamlessly with Laravel Blade templates and require
 
 In your Blade template:
 
-```bash
+```html
 <head>
 @encryptFormScripts
 </head>
@@ -67,7 +67,7 @@ In your Blade template:
 
 Use the Laravel openssl_private_decrypt function to decrypt data on the server:
 
-```bash
+```php
 use Illuminate\Support\Facades\Config;
 
 $privateKey = Config::get('encryption_form.private_key');
@@ -99,7 +99,7 @@ This will update the keys in your .env file.
 
 ```config/encryption_form.php```
 
-```bash
+```php
 return [
     'public_key' => env('ENCRYPTION_FORM_PUBLIC_KEY'),
     'private_key' => env('ENCRYPTION_FORM_PRIVATE_KEY'),
@@ -110,7 +110,7 @@ return [
 
 You can schedule automatic key rotation by adding the following to your App\Console\Kernel:
 
-```bash
+```php
 $schedule->command('encryption-form:generate-keys')->monthly();
 ```
 
