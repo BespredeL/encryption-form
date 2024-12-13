@@ -6,6 +6,7 @@ use Bespredel\EncryptionForm\Blade\Directives;
 use Bespredel\EncryptionForm\Console\Commands\GenerateEncryptionKeys;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use Bespredel\EncryptionForm\Middleware\DecryptRequestFields;
 
 class EncryptionFormServiceProvider extends ServiceProvider
 {
@@ -59,7 +60,7 @@ class EncryptionFormServiceProvider extends ServiceProvider
      */
     public function registerMiddleware(Router $router): void
     {
-        $router->aliasMiddleware('encryption-form', 'Bespredel\EncryptionForm\Middleware\EncryptionForm');
+        $router->aliasMiddleware('decrypt-form', DecryptRequestFields::class);
     }
 
     /**
