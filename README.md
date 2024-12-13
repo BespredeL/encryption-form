@@ -128,13 +128,14 @@ return [
 
 ## Key Rotation via Scheduler
 
-You can schedule automatic key rotation by adding the following to your App\Console\Kernel:
+You can schedule automatic key rotation via the `key_rotation` key in the config file.:
 
 ```php
-$schedule->command('encryption-form:generate-keys')->monthly();
+    'key_rotation' => [
+        'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false),
+        'cron_expression' => '0 0 * * *',
+    ],
 ```
-
-Set the rotation frequency (daily, weekly, monthly, etc.) based on your security requirements.
 
 ## Contributing
 
