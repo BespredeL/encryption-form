@@ -67,7 +67,9 @@
          * @param {HTMLFormElement} form
          */
         askUserForAction(form) {
-            const userDecision = confirm(window.ENCRYPTION_FORM_LANG['ASK_USER_FOR_ACTION']);
+            const askText = window.ENCRYPTION_FORM_LANG['Encryption is not available. Do you want to submit the form without encryption?']
+                || 'Encryption is not available. Do you want to submit the form without encryption?';
+            const userDecision = confirm(askText);
             if (userDecision) {
                 form.submit();
             } else {
