@@ -13,14 +13,14 @@ class GenerateEncryptionKeys extends Command
      *
      * @var string
      */
-    protected string $signature = 'encryption-form:generate-keys';
+    protected $signature = 'encryption-form:generate-keys';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected string $description = 'Generate a new RSA key pair for encryption';
+    protected $description = 'Generate a new RSA key pair for encryption';
 
     /**
      * Execute the console command.

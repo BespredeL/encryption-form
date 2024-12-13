@@ -56,7 +56,7 @@
         updateStatus(message, isError = false) {
             const statusElement = document.querySelector('.encrypt-form-status');
             if (statusElement) {
-                statusElement.textContent = message;
+                statusElement.textContent = window.ENCRYPTION_FORM_LANG[message] || message;
                 statusElement.style.color = isError ? 'red' : 'green';
             }
         }
@@ -67,7 +67,9 @@
          * @param {HTMLFormElement} form
          */
         askUserForAction(form) {
-            const userDecision = confirm('Encryption is not available. Do you want to submit the form without encryption?');
+            const askText = window.ENCRYPTION_FORM_LANG['Encryption is not available. Do you want to submit the form without encryption?']
+                || 'Encryption is not available. Do you want to submit the form without encryption?';
+            const userDecision = confirm(askText);
             if (userDecision) {
                 form.submit();
             } else {
