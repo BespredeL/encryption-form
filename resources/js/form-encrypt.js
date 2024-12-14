@@ -128,6 +128,13 @@
                     return;
                 }
 
+                // Check if encryption is available
+                if (this.isEncryptionAvailable()) {
+                    this.updateStatus('Encryption available.', false);
+                } else {
+                    this.updateStatus('Encryption not available.', true);
+                }
+
                 form.addEventListener('submit', (e) => {
                     e.preventDefault();
                     try {
