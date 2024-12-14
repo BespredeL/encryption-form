@@ -23,7 +23,7 @@ class Directives
             }
 
             $escapedKey = addslashes($publicKey);
-            $translations = json_encode(trans('encryption_form'));
+            $translations = json_encode(trans('encryption-form::encryption_form'));
 
             // Generate SRI hashes dynamically
             $jsencryptPath = public_path('vendor/encryption-form/js/jsencrypt.min.js');
