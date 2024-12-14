@@ -14,7 +14,7 @@ class RequestDecryptor
      *
      * @return string|null
      */
-    public function decryptField(string $value, string $privateKey): ?string
+    public function decryptValue(string $value, string $privateKey): ?string
     {
         $res = openssl_pkey_get_private($privateKey);
         if (!$res) {
@@ -49,7 +49,7 @@ class RequestDecryptor
     {
         return collect($fields)->mapWithKeys(function ($value, $key) use ($privateKey) {
             if (is_string($value) && str_starts_with($value, 'ENCF:')) {
-                return [$key => $this->decryptField($value, $privateKey)];
+                return [$key => $this->decryptValue($value, $privateKey)];
             }
             return [$key => $value];
         })->toArray();

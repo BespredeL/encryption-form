@@ -1,59 +1,62 @@
-# Encryption Form
+# Форма для шифрования
 
-A Laravel package to securely encrypt form fields on the client-side using public key encryption and decrypt them on the server-side using the private
-key. This package integrates seamlessly with Laravel Blade templates and requires minimal configuration.
-
----
-
-## Features
-
-- **RSA Encryption**: Uses `JSEncrypt` for secure RSA encryption.
-- **HTML Attribute Control**: Specify which fields to encrypt using `data-encrypt="true"`.
-- **Flexible Form Encryption**: Target specific forms using `data-encrypt-form` attribute.
-- **Blade Directive**: Automatically inject encryption scripts with `@encryptFormScripts`.
-- **Simple Key Management**: Easily configure keys via `.env` or generate new keys via artisan commands.
-- **Zero Dependencies**: No NPM required; all scripts are included in the package.
+Пакет Laravel для надежного шифрования полей формы на стороне клиента с помощью шифрования с открытым ключом и их расшифровки на стороне сервера с
+помощью закрытого
+ключа. Этот пакет легко интегрируется с шаблонами Laravel Blade и требует минимальной настройки.
 
 ---
 
-## Installation
+## Особенности
 
-1. **Install the Package**:
+- **RSA-шифрование**: Использует `JSEncrypt` для безопасного RSA-шифрования.
+- **Управление атрибутами HTML**: Укажите, какие поля шифровать, используя `data-encrypt="true".
+- **Гибкое шифрование форм**: Ориентируйтесь на конкретные формы, используя атрибут `data-encrypt-form`.
+- **Директива Blade**: Автоматическое внедрение сценариев шифрования с помощью "@encryptFormScripts".
+- **Простое управление ключами**: Простая настройка ключей с помощью ".env" или генерация новых ключей с помощью команд artisan.
+- **Нулевые зависимости**: NPM не требуется; все скрипты включены в пакет.
+
+---
+
+## Установка
+
+1. **Установите пакет**:
    ```bash
    composer require bespredel/encryption-form
    ```
-2. **Publish Config and Scripts**:
+2. **Опубликуйте конфигурацию и скрипты**:
    ```bash
    php artisan vendor:publish --tag=encryption-form
    ```
-3. **Add RSA Keys to ```.env```**:
+3. **Добавьте ключи RSA в ``.env``**:
    ```bash
    ENCRYPTION_FORM_PUBLIC_KEY="-----BEGIN PUBLIC KEY-----...-----END PUBLIC KEY-----"
    ENCRYPTION_FORM_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----...-----END PRIVATE KEY-----"
    ```
 
-   If you don't have keys, you can generate them using the following commands:
+   Если у вас нет ключей, вы можете сгенерировать их с помощью следующей команды:
    ```bash
-   php artisan encryption-form:generate-keys
+   php artisan encryption-form:генерирует ключи для шифрования
    ```
 
-4. **Include the Blade Directive in Your Template**:
-   Add @encryptFormScripts to your layout file or specific views where forms are encrypted.
+4. **Включите директиву Blade в свой шаблон**:
+   Добавьте @encryptFormScripts в свой файл макета или в конкретные представления, в которых формы должны быть зашифрованы.
 
-## Usage
+## Использование
 
 ### Middleware
 
+Для автоматической расшифровки данных формы добавьте middleware DecryptRequestFields в Kernel:
+
 ```php
-Add the middleware to your Kernel
+Добавьте middleware в Kernel
 
 protected $middleware = [
-    // Other middleware
-    \Bespredel\EncryptionForm\Middleware\DecryptRequestFields::class
+    // Другое промежуточное программное обеспечение
+    \Bespredel\EncryptionForm\Middleware\DecryptRequestFields::класс,
 ]
 ```
 
-or use it in a route:
+или используйте его в маршруте:
 
 ```php
 Route::middleware('decrypt-form')->group(function () {
@@ -61,9 +64,9 @@ Route::middleware('decrypt-form')->group(function () {
 })
 ```
 
-### HTML Form Example
+### Пример HTML-формы
 
-In your Blade template:
+В вашем шаблоне Blade:
 
 ```html
 
@@ -80,12 +83,30 @@ In your Blade template:
 </form>
 ```
 
-- Add data-encrypt-form to the <form> tag to enable encryption for that form.
-- Use data-encrypt="true" on individual fields that require encryption.
+- Добавьте data-encrypt-form в тег <form>, чтобы включить шифрование для этой формы.
+- Используйте data-encrypt="true" для полей, которые требуют шифрования.
 
-### Decrypting Data on the Server
+Типы полей, которые в данный момент недоступны для шифрования:
 
-Use the Laravel openssl_private_decrypt function to decrypt data on the server:
+- checkbox
+- radio
+- select
+- file
+
+### Расшифровка данных вручную на сервере
+
+Используйте класс RequestDecryptor для расшифровки данных на сервере:
+
+```php
+use Bespredel\EncryptionForm\Services\RequestDecryptor;
+
+$value = $request->input('name'); // Example for 'name' field
+$privateKey = Config::get('encryption_form.private_key');
+
+$decryptedValue = RequestDecryptor::decryptValue($value, $privateKey);
+```
+
+Или используйте функцию openssl_private_decrypt для расшифровки данных на сервере:
 
 ```php
 use Illuminate\Support\Facades\Config;
@@ -101,61 +122,69 @@ openssl_private_decrypt($decodedValue, $decryptedData, $privateKey);
 echo $decryptedData; // Output the decrypted value
 ```
 
-## Commands
+## Команды
 
-### Generate New RSA Keys
+### Генерировать новые ключи RSA
 
-To generate a new pair of RSA keys:
+Чтобы сгенерировать новую пару ключей RSA:
 
 ```bash
 php artisan encryption-form:generate-keys
 ```
 
-This will update the keys in your .env file.
+Это обновит ключи в вашем файле .env.
 
-## Configuration
+## Конфигурация
 
-### Config File:
+### Конфигурационный файл:
 
 ```config/encryption_form.php```
 
 ```php
 return [
-    'public_key' => env('ENCRYPTION_FORM_PUBLIC_KEY'),
-    'private_key' => env('ENCRYPTION_FORM_PRIVATE_KEY'),
+   'public_key' => env('ENCRYPTION_FORM_PUBLIC_KEY'),
+   'private_key' => env('ENCRYPTION_FORM_PRIVATE_KEY'),
+   'key_rotation' => [
+      'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false),
+      'cron_expression' => '0 0 * * *',
+   ],
 ];
 ```
 
-## Key Rotation via Scheduler
+## Обновление ключей с помощью планировщика
 
-You can schedule automatic key rotation via the `key_rotation` key in the config file.:
+Вы можете запланировать автоматическую смену клавиш с помощью клавиши `key_rotation` в конфигурационном файле.:
 
 ```php
-    'key_rotation' => [
-        'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false),
-        'cron_expression' => '0 0 * * *',
-    ],
+return [
+    ...
+   'key_rotation' => [
+     'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false),
+     'cron_expression' => '0 0 * * *',
+   ],
+];
 ```
 
-## Contributing
+## Способствовать развитию
 
-1. Fork the repository.
-2. Create your feature branch: git checkout -b feature/my-feature.
-3. Commit your changes: git commit -m 'Add some feature'.
-4. Push to the branch: git push origin feature/my-feature.
-5. Open a pull request.
+1. Форкните репозиторий.
+2. Создайте свою функциональную ветку: git checkout -b feature/my-feature.
+3. Закомитьте свои изменения: git commit -m "Добавлена функция".
+4. Запушьте ветку: git push origin feature/my-feature.
+5. Отправьте пулл-реквест.
 
-## Security
+## Безопасность
 
-PLEASE DON'T DISCLOSE SECURITY-RELATED ISSUES PUBLICLY.
+ПОЖАЛУЙСТА, НЕ СООБЩАЙТЕ О ПРОБЛЕМАХ, СВЯЗАННЫХ С БЕЗОПАСНОСТЬЮ, ПУБЛИЧНО.
 
-If you discover any security related issues, please email hello@bespredel.name instead of using the issue tracker.
+Если вы обнаружите какие-либо проблемы, связанные с безопасностью, пожалуйста, напишите мне по электронной почте hello@bespredel.name вместо того,
+чтобы использовать систему отслеживания проблем.
 
-## Acknowledgements
+## Благодарности
 
-I would like to thank the authors and contributors of the [JSEncrypt](https://github.com/travist/jsencrypt) library for providing a secure RSA
-encryption solution for client-side data encryption.
+Я хотел бы поблагодарить авторов и соавторов библиотеки [JSEncrypt](https://github.com/travist/jsencrypt) за предоставление надежного RSA
+-решения для шифрования данных на стороне клиента.
 
-## License
+## Лицензия
 
-This package is open-source software licensed under the MIT license.
+Этот пакет представляет собой программное обеспечение с открытым исходным кодом, лицензированное по лицензии MIT.
