@@ -21,7 +21,7 @@ class EncryptionFormServiceProvider extends ServiceProvider
      */
     public function boot(Router $router): void
     {
-        $langPath = $this->getLangPath('vendor/encryption-form');
+        $langPath = $this->getLangPath('/');
 
         $this->publishes([
             __DIR__ . '/../config/encryption_form.php' => config_path('encryption_form.php'),
