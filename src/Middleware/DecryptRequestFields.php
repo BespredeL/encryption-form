@@ -4,6 +4,7 @@ namespace Bespredel\EncryptionForm\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Bespredel\EncryptionForm\Services\RequestDecryptor;
 
 class DecryptRequestFields
@@ -32,6 +33,7 @@ class DecryptRequestFields
     {
         $privateKey = config('encryption_form.private_key');
         if (!$privateKey) {
+            Log::warning('Private key for encryption form is not set');
             return $next($request);
         }
 
