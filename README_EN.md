@@ -38,13 +38,13 @@ key. This package integrates seamlessly with Laravel Blade templates and require
    ```
 
 4. **Include the Blade Directive in Your Template**:
-   Add @encryptFormScripts to your layout file or specific views where forms are encrypted.
+   Add `@encryptFormScripts` to your layout file or specific views where forms are encrypted.
 
 ## Usage
 
 ### Middleware
 
-For auto decryption of form data, add the DecryptRequestFields middleware to your Kernel:
+For auto decryption of form data, add the `DecryptRequestFields` middleware to your `Kernel`:
 
 ```php
 Add the middleware to your Kernel
@@ -82,8 +82,8 @@ In your Blade template:
 </form>
 ```
 
-- Add data-encrypt-form to the <form> tag to enable encryption for that form.
-- Use data-encrypt="true" on individual fields that require encryption.
+- Add `data-encrypt-form` to the <form> tag to enable encryption for that form.
+- Use `data-encrypt="true"` on individual fields that require encryption.
 
 Field types currently unavailable for encryption:
 
@@ -94,7 +94,7 @@ Field types currently unavailable for encryption:
 
 ### Manual decrypting data on the server
 
-Use the RequestDecryptor class to decrypt data on the server:
+Use the `RequestDecryptor` class to decrypt data on the server:
 
 ```php
 use Bespredel\EncryptionForm\Services\RequestDecryptor;
@@ -105,7 +105,7 @@ $privateKey = Config::get('encryption_form.private_key');
 $decryptedValue = RequestDecryptor::decryptValue($value, $privateKey);
 ```
 
-Or use the Laravel openssl_private_decrypt function to decrypt data on the server:
+Or use the `openssl_private_decrypt` function to decrypt data on the server:
 
 ```php
 use Illuminate\Support\Facades\Config;
@@ -131,7 +131,7 @@ To generate a new pair of RSA keys:
 php artisan encryption-form:generate-keys
 ```
 
-This will update the keys in your .env file.
+This will update the keys in your `.env` file.
 
 ## Configuration
 
@@ -167,21 +167,20 @@ return [
 ## Contributing
 
 1. Fork the repository.
-2. Create your feature branch: git checkout -b feature/my-feature.
-3. Commit your changes: git commit -m 'Add some feature'.
-4. Push to the branch: git push origin feature/my-feature.
+2. Create your feature branch: `git checkout -b feature/my-feature`.
+3. Commit your changes: `git commit -m 'Add some feature'`.
+4. Push to the branch: `git push origin feature/my-feature`.
 5. Open a pull request.
 
 ## Security
 
 PLEASE DON'T DISCLOSE SECURITY-RELATED ISSUES PUBLICLY.
 
-If you discover any security related issues, please email hello@bespredel.name instead of using the issue tracker.
+If you discover any security related issues, please email [hello@bespredel.name](hello@bespredel.name) instead of using the issue tracker.
 
 ## Acknowledgements
 
-I would like to thank the authors and contributors of the [JSEncrypt](https://github.com/travist/jsencrypt) library for providing a secure RSA
-encryption solution for client-side data encryption.
+I would like to thank the authors and contributors of the [JSEncrypt](https://github.com/travist/jsencrypt) library for providing a secure RSA encryption solution for client-side data encryption.
 
 ## License
 
