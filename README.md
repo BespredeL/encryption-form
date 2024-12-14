@@ -53,7 +53,7 @@ protected $middleware = [
 ]
 ```
 
-or use it in a route group:
+or use it in a route:
 
 ```php
 Route::middleware('decrypt-form')->group(function () {

@@ -64,14 +64,21 @@ class GenerateEncryptionKeys extends Command
 
         $envContent = File::get($envPath);
 
-        // Replace existing keys or add new ones
-        $envContent = preg_replace('/ENCRYPTION_FORM_PUBLIC_KEY=".*?"/', '', $envContent);
-        $envContent = preg_replace('/ENCRYPTION_FORM_PRIVATE_KEY=".*?"/', '', $envContent);
-        $envContent .= "\nENCRYPTION_FORM_PUBLIC_KEY=\"{$publicKey}\"\n";
-        $envContent .= "ENCRYPTION_FORM_PRIVATE_KEY=\"{$privateKey}\"\n";
+        // Remove existing keys
+        $envContent = preg_replace('/\nENCRYPTION_FORM_PUBLIC_KEY="[^"]*"/m', '', $envContent);
+        $envContent = preg_replace('/\nENCRYPTION_FORM_PRIVATE_KEY="[^"]*"/m', '', $envContent);
+
+        // If there are no keys, add them to the end of the file
+        if (!preg_match('/^ENCRYPTION_FORM_PUBLIC_KEY="/m', $envContent)) {
+            $envContent .= "\nENCRYPTION_FORM_PUBLIC_KEY=\"{$publicKey}\"";
+        }
+
+        if (!preg_match('/^ENCRYPTION_FORM_PRIVATE_KEY="/m', $envContent)) {
+            $envContent .= "\nENCRYPTION_FORM_PRIVATE_KEY=\"{$privateKey}\"";
+        }
 
         File::put($envPath, $envContent);
 
-        $this->call('config:clear'); // Clearing the configuration cache
+        $this->call('config:clear'); // Resetting the configuration cache
     }
 }

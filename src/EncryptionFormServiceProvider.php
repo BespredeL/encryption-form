@@ -21,16 +21,13 @@ class EncryptionFormServiceProvider extends ServiceProvider
      */
     public function boot(Router $router): void
     {
-        $langPath = 'vendor/encryption-form';
-        $langPath = (function_exists('lang_path'))
-            ? lang_path($langPath)
-            : resource_path('lang/' . $langPath);
+        $langPath = $this->getLangPath('vendor/encryption-form');
 
         $this->publishes([
             __DIR__ . '/../config/encryption_form.php' => config_path('encryption_form.php'),
             __DIR__ . '/../resources/js'               => public_path('vendor/encryption-form/js'),
             __DIR__ . '/../resources/lang'             => $langPath,
-        ], 'decrypt-form');
+        ], 'encryption-form');
 
         $this->registerMiddleware($router);
         $this->registerCommands();
@@ -81,5 +78,19 @@ class EncryptionFormServiceProvider extends ServiceProvider
                     ->cron(config('encryption_form.key_rotation.cron_expression'));
             });
         }
+    }
+
+    /**
+     * Get the language path.
+     *
+     * @param string $relativePath
+     *
+     * @return string
+     */
+    protected function getLangPath(string $relativePath): string
+    {
+        return function_exists('lang_path')
+            ? lang_path($relativePath)
+            : resource_path('lang/' . $relativePath);
     }
 }
