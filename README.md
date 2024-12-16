@@ -83,7 +83,7 @@ In your Blade template:
 </form>
 ```
 
-- Add `data-encrypt-form` to the <form> tag to enable encryption for that form.
+- Add `data-encrypt-form` to the `<form>` tag to enable encryption for that form.
 - Use `data-encrypt="true"` on individual fields that require encryption.
 
 Field types currently unavailable for encryption:

@@ -84,7 +84,7 @@ Route::middleware('decrypt-form')->group(function () {
 </form>
 ```
 
-- Добавьте `data-encrypt-form` в тег <form>, чтобы включить шифрование для этой формы.
+- Добавьте `data-encrypt-form` в тег `<form>`, чтобы включить шифрование для этой формы.
 - Используйте `data-encrypt="true"` для полей, которые требуют шифрования.
 
 Типы полей, которые в данный момент недоступны для шифрования:
@@ -114,13 +114,13 @@ use Illuminate\Support\Facades\Config;
 
 $privateKey = Config::get('encryption_form.private_key');
 
-$encryptedData = $request->input('name'); // Example for 'name' field
+$encryptedData = $request->input('name'); // Пример поля 'name' имя
 $decryptedData = null;
 
 $decodedValue = base64_decode((string)str($encryptedData)->after('ENCF:'), true);
 openssl_private_decrypt($decodedValue, $decryptedData, $privateKey);
 
-echo $decryptedData; // Output the decrypted value
+echo $decryptedData; // Вывод расшифрованного значения
 ```
 
 ## Команды
@@ -154,7 +154,7 @@ return [
 
 ## Обновление ключей с помощью планировщика
 
-Вы можете запланировать автоматическую смену клавиш с помощью клавиши `key_rotation` в конфигурационном файле.:
+Вы можете запланировать автоматическую смену ключей шифрования с помощью `key_rotation` в конфигурационном файле.:
 
 ```php
 return [
