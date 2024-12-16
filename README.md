@@ -17,8 +17,6 @@ key. This package integrates seamlessly with Laravel Blade templates and require
 - **Simple Key Management**: Easily configure keys via `.env` or generate new keys via artisan commands.
 - **Zero Dependencies**: No NPM required; all scripts are included in the package.
 
----
-
 ## Installation
 
 1. **Install the Package**:
