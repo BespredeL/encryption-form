@@ -56,7 +56,7 @@
         updateStatus(message, isError = false) {
             const statusElement = document.querySelector('.encrypt-form-status');
             if (statusElement) {
-                statusElement.textContent = window.ENCRYPTION_FORM_LANG[message] || message;
+                statusElement.textContent = window.ENCRYPTION_FORM.trans(message);
                 statusElement.style.color = isError ? 'red' : 'green';
             }
         }
@@ -67,8 +67,7 @@
          * @param {HTMLFormElement} form
          */
         askUserForAction(form) {
-            const askText = window.ENCRYPTION_FORM_LANG['Encryption is not available. Do you want to submit the form without encryption?']
-                || 'Encryption is not available. Do you want to submit the form without encryption?';
+            const askText = window.ENCRYPTION_FORM.trans('Encryption is not available. Do you want to submit the form without encryption?');
             const userDecision = confirm(askText);
             if (userDecision) {
                 form.submit();
@@ -99,14 +98,14 @@
                             const hiddenField = document.createElement('input');
                             hiddenField.type = 'hidden';
                             hiddenField.name = field.name;
-                            hiddenField.value = `ENCF:${encryptedValue}`;
+                            hiddenField.value = `${window.ENCRYPTION_FORM.prefix}${encryptedValue}`;
                             form.appendChild(hiddenField);
 
                             // Clear the original number field value to prevent submission
                             field.name = ''; // Remove the name to avoid duplication
                             field.value = ''; // Clear the value
                         } else {
-                            field.value = `ENCF:${encryptedValue}`;
+                            field.value = `${window.ENCRYPTION_FORM.prefix}${encryptedValue}`;
                         }
                     }
                 });
@@ -157,12 +156,12 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         try {
-            if (!window.ENCRYPTION_FORM_PUBLIC_KEY) {
+            if (!window.ENCRYPTION_FORM.public_key) {
                 console.error('ENCRYPTION_FORM_PUBLIC_KEY is not set!');
                 return;
             }
 
-            const formEncryptor = new FormEncryptor(window.ENCRYPTION_FORM_PUBLIC_KEY);
+            const formEncryptor = new FormEncryptor(window.ENCRYPTION_FORM.public_key);
             formEncryptor.attachToForms();
         } catch (error) {
             console.error('Failed to initialize FormEncryptor:', error);

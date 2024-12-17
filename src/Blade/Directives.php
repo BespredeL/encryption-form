@@ -17,6 +17,7 @@ class Directives
     {
         Blade::directive('encryptFormScripts', function () {
             $publicKey = config('encryption_form.public_key');
+            $prefix = config('encryption_form.prefix', 'ENCF:');
 
             if (!$publicKey) {
                 throw new \Exception('Public key for encryption is not set in the configuration.');
@@ -40,8 +41,18 @@ class Directives
 <script src="/vendor/encryption-form/js/jsencrypt.min.js" integrity="sha384-{$jsencryptSri}" crossorigin="anonymous"></script>
 <script src="/vendor/encryption-form/js/form-encrypt.js" integrity="sha384-{$formEncryptSri}" crossorigin="anonymous"></script>
 <script>
-    window.ENCRYPTION_FORM_PUBLIC_KEY = `{$escapedKey}`;
-    window.ENCRYPTION_FORM_LANG = {$translations};
+    window.ENCRYPTION_FORM = {
+        'public_key': `{$escapedKey}`,
+        'prefix': `$prefix`,
+        trans: (str, params = {}) => {
+            let translation_dict = $translations;
+            let translation = translation_dict[str] || str;
+            for (const key in params) {
+                translation = translation.replace(new RegExp(`:${key}`, 'g'), params[key]);
+            }
+            return translation;
+        }
+    }
 </script>
 HTML;
         });
