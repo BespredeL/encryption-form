@@ -37,7 +37,9 @@ class DecryptRequestFields
             return $next($request);
         }
 
-        $decrypted = $this->decryptor->decryptFields($request->all(), $privateKey);
+        $fieldPrefix = config('encryption_form.prefix', 'ENCF:');
+
+        $decrypted = $this->decryptor->decryptFields($request->all(), $privateKey, $fieldPrefix);
         $request->merge($decrypted);
 
         return $next($request);
