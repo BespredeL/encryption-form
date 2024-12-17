@@ -51,7 +51,7 @@ class RequestDecryptor
     {
         return collect($fields)->mapWithKeys(function ($value, $key) use ($privateKey, $fieldPrefix) {
             if (is_string($value) && str_starts_with($value, $fieldPrefix)) {
-                return [$key => $this->decryptValue($value, $privateKey)];
+                return [$key => $this->decryptValue($value, $privateKey, $fieldPrefix)];
             }
             return [$key => $value];
         })->toArray();

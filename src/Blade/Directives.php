@@ -48,7 +48,7 @@ class Directives
             let translation_dict = $translations;
             let translation = translation_dict[str] || str;
             for (const key in params) {
-                translation = translation.replace(new RegExp(`:${key}`, 'g'), params[key]);
+                translation = translation.replace(new RegExp(`:` + key, 'g'), params[key]);
             }
             return translation;
         }
