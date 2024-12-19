@@ -109,7 +109,7 @@ Route::middleware('decrypt-form')->group(function () {
 use Bespredel\EncryptionForm\Services\RequestDecryptor;
 
 $value = $request->input('name'); // Example for 'name' field
-$privateKey = Config::get('encryption_form.private_key');
+$privateKey = config('encryption-form.private_key');
 
 $decryptedValue = RequestDecryptor::decryptValue($value, $privateKey);
 ```
@@ -117,9 +117,7 @@ $decryptedValue = RequestDecryptor::decryptValue($value, $privateKey);
 Или используйте функцию `openssl_private_decrypt` для расшифровки данных на сервере:
 
 ```php
-use Illuminate\Support\Facades\Config;
-
-$privateKey = Config::get('encryption_form.private_key');
+$privateKey = config('encryption-form.private_key');
 
 $encryptedData = $request->input('name'); // Пример поля 'name' имя
 $decryptedData = null;
@@ -146,7 +144,7 @@ php artisan encryption-form:generate-keys
 
 ### Конфигурационный файл:
 
-```config/encryption_form.php```
+```config/encryption-form.php```
 
 ```php
 return [

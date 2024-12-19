@@ -31,13 +31,13 @@ class DecryptRequestFields
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        $privateKey = config('encryption_form.private_key');
+        $privateKey = config('encryption-form.private_key');
         if (!$privateKey) {
             Log::warning('Private key for encryption form is not set');
             return $next($request);
         }
 
-        $fieldPrefix = config('encryption_form.prefix', 'ENCF:');
+        $fieldPrefix = config('encryption-form.prefix', 'ENCF:');
 
         $decrypted = $this->decryptor->decryptFields($request->all(), $privateKey, $fieldPrefix);
         $request->merge($decrypted);

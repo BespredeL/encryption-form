@@ -26,7 +26,7 @@ class EncryptionFormServiceProvider extends ServiceProvider
         $langPath = $this->getLangPath('vendor/encryption-form');
 
         $this->publishes([
-            __DIR__ . '/../config/encryption_form.php' => config_path('encryption_form.php'),
+            __DIR__ . '/../config/encryption-form.php' => config_path('encryption-form.php'),
             __DIR__ . '/../resources/js'               => public_path('vendor/encryption-form/js'),
             __DIR__ . '/../resources/lang'             => $langPath,
         ], 'encryption-form');
@@ -52,8 +52,8 @@ class EncryptionFormServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/encryption_form.php',
-            'encryption_form'
+            __DIR__ . '/../config/encryption-form.php',
+            'encryption-form'
         );
     }
 
@@ -80,11 +80,11 @@ class EncryptionFormServiceProvider extends ServiceProvider
             GenerateEncryptionKeys::class,
         ]);
 
-        if (config('encryption_form.key_rotation.enabled')) {
+        if (config('encryption-form.key_rotation.enabled')) {
             $this->app->booted(function () {
                 app(Schedule::class)
                     ->command('encryption-form:generate-keys')
-                    ->cron(config('encryption_form.key_rotation.cron_expression'));
+                    ->cron(config('encryption-form.key_rotation.cron_expression'));
             });
         }
     }
