@@ -8,7 +8,7 @@
 [![Latest Version](https://img.shields.io/github/v/release/bespredel/encryption-form?logo=github)](https://github.com/bespredel/encryption-form/releases)
 [![Latest Version Packagist](https://img.shields.io/packagist/v/bespredel/encryption-form.svg?logo=packagist&logoColor=white&color=F28D1A)](https://packagist.org/packages/bespredel/encryption-form)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/bespredel/encryption-form.svg?logo=php&logoColor=white&color=777BB4)](https://php.net)
-[![Laravel Version](https://img.shields.io/badge/laravel-%3E%3D10-FF2D20?logo=laravel)](https://laravel.com)
+[![Laravel Version](https://img.shields.io/badge/laravel-%3E%3D9-FF2D20?logo=laravel)](https://laravel.com)
 
 Пакет Laravel для надежного шифрования полей формы на стороне клиента с помощью шифрования с открытым ключом и их расшифровки на стороне сервера с
 помощью закрытого
