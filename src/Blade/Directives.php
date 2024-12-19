@@ -16,6 +16,11 @@ class Directives
     public static function register(): void
     {
         Blade::directive('encryptFormScripts', function () {
+
+            if (!config('encryption-form.enabled')) {
+                return '';
+            }
+
             $publicKey = config('encryption-form.public_key');
             $prefix = config('encryption-form.prefix', 'ENCF:');
 

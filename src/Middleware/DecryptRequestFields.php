@@ -31,6 +31,10 @@ class DecryptRequestFields
      */
     public function handle(Request $request, Closure $next): mixed
     {
+        if (!config('encryption-form.enabled')) {
+            return $next($request);
+        }
+
         $privateKey = config('encryption-form.private_key');
         if (!$privateKey) {
             Log::warning('Private key for encryption form is not set');
