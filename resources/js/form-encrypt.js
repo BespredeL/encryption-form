@@ -57,7 +57,9 @@
             const statusElement = document.querySelector('.encrypt-form-status');
             if (statusElement) {
                 statusElement.textContent = window.ENCRYPTION_FORM.trans(message);
-                statusElement.style.color = isError ? 'red' : 'green';
+                if (!statusElement.style.color) {
+                    statusElement.style.color = isError ? 'red' : 'green';
+                }
             }
         }
 
