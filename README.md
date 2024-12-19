@@ -86,6 +86,9 @@ In your Blade template:
     <input type="text" name="name" data-encrypt="true" placeholder="Enter your name" />
     <input type="email" name="email" data-encrypt="true" placeholder="Enter your email" />
     <input type="text" name="address" placeholder="Enter your address" />
+
+    <div class="encrypt-form-status"></div> <!-- Optional element to display encryption operation status -->
+   
     <button type="submit">Submit</button>
 </form>
 ```

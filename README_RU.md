@@ -87,6 +87,9 @@ Route::middleware('decrypt-form')->group(function () {
     <input type="text" name="name" data-encrypt="true" placeholder="Enter your name" />
     <input type="email" name="email" data-encrypt="true" placeholder="Enter your email" />
     <input type="text" name="address" placeholder="Enter your address" />
+   
+   <div class="encrypt-form-status"></div> <!-- Необязательный элемент для отображения статуса работы шифрования -->
+   
     <button type="submit">Submit</button>
 </form>
 ```
