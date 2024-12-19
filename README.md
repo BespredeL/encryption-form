@@ -108,7 +108,7 @@ Use the `RequestDecryptor` class to decrypt data on the server:
 use Bespredel\EncryptionForm\Services\RequestDecryptor;
 
 $value = $request->input('name'); // Example for 'name' field
-$privateKey = Config::get('encryption_form.private_key');
+$privateKey = config('encryption-form.private_key');
 
 $decryptedValue = RequestDecryptor::decryptValue($value, $privateKey);
 ```
@@ -116,9 +116,7 @@ $decryptedValue = RequestDecryptor::decryptValue($value, $privateKey);
 Or use the `openssl_private_decrypt` function to decrypt data on the server:
 
 ```php
-use Illuminate\Support\Facades\Config;
-
-$privateKey = Config::get('encryption_form.private_key');
+$privateKey = config('encryption-form.private_key');
 
 $encryptedData = $request->input('name'); // Example for 'name' field
 $decryptedData = null;
@@ -145,7 +143,7 @@ This will update the keys in your `.env` file.
 
 ### Config File:
 
-```config/encryption_form.php```
+```config/encryption-form.php```
 
 ```php
 return [

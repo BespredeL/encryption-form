@@ -16,15 +16,15 @@ class Directives
     public static function register(): void
     {
         Blade::directive('encryptFormScripts', function () {
-            $publicKey = config('encryption_form.public_key');
-            $prefix = config('encryption_form.prefix', 'ENCF:');
+            $publicKey = config('encryption-form.public_key');
+            $prefix = config('encryption-form.prefix', 'ENCF:');
 
             if (!$publicKey) {
                 throw new \Exception('Public key for encryption is not set in the configuration.');
             }
 
             $escapedKey = addslashes($publicKey);
-            $translations = json_encode(trans('encryption-form::encryption_form'));
+            $translations = json_encode(trans('encryption-form::encryption-form'));
 
             // Generate SRI hashes dynamically
             $jsencryptPath = public_path('vendor/encryption-form/js/jsencrypt.min.js');
