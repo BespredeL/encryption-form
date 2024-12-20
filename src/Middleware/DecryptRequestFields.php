@@ -3,6 +3,7 @@
 namespace Bespredel\EncryptionForm\Middleware;
 
 use Bespredel\EncryptionForm\Services\Interfaces\RequestDecryptorInterface;
+use Bespredel\EncryptionForm\Services\RequestDecryptor;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +17,7 @@ class DecryptRequestFields
      */
     protected RequestDecryptorInterface $decryptor;
 
-    public function __construct(RequestDecryptorInterface $decryptor)
+    public function __construct(RequestDecryptor $decryptor)
     {
         $this->decryptor = $decryptor;
     }
@@ -31,7 +32,7 @@ class DecryptRequestFields
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        if (!config('encryption-form.enabled')) {
+        if (!config('encryption-form.enabled', true)) {
             return $next($request);
         }
 

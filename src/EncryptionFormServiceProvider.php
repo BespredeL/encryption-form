@@ -79,7 +79,7 @@ class EncryptionFormServiceProvider extends ServiceProvider
             GenerateEncryptionKeys::class,
         ]);
 
-        if (config('encryption-form.enabled') && config('encryption-form.key_rotation.enabled')) {
+        if (config('encryption-form.enabled', true) && config('encryption-form.key_rotation.enabled', false)) {
             $this->app->booted(function () {
                 app(Schedule::class)
                     ->command('encryption-form:generate-keys')
