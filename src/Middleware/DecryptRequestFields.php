@@ -8,7 +8,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class DecryptRequestFields
+class  DecryptRequestFields
 {
     /**
      * Request decryptor
@@ -43,7 +43,6 @@ class DecryptRequestFields
         }
 
         $fieldPrefix = config('encryption-form.prefix', 'ENCF:');
-
         $decrypted = $this->decryptor->decryptFields($request->all(), $privateKey, $fieldPrefix);
         $request->merge($decrypted);
 
