@@ -4,11 +4,10 @@ namespace Bespredel\EncryptionForm;
 
 use Bespredel\EncryptionForm\Blade\Directives;
 use Bespredel\EncryptionForm\Console\Commands\GenerateEncryptionKeys;
+use Bespredel\EncryptionForm\Middleware\DecryptRequestFields;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Bespredel\EncryptionForm\Middleware\DecryptRequestFields;
-
 
 class EncryptionFormServiceProvider extends ServiceProvider
 {
@@ -80,7 +79,7 @@ class EncryptionFormServiceProvider extends ServiceProvider
             GenerateEncryptionKeys::class,
         ]);
 
-        if (config('encryption-form.enabled') && config('encryption-form.key_rotation.enabled')) {
+        if (config('encryption-form.enabled', true) && config('encryption-form.key_rotation.enabled', false)) {
             $this->app->booted(function () {
                 app(Schedule::class)
                     ->command('encryption-form:generate-keys')

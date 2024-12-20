@@ -2,9 +2,10 @@
 
 namespace Bespredel\EncryptionForm\Services;
 
+use Bespredel\EncryptionForm\Services\Interfaces\RequestDecryptorInterface;
 use Illuminate\Support\Facades\Log;
 
-class RequestDecryptor
+class RequestDecryptor implements RequestDecryptorInterface
 {
     /**
      * Decrypt an encrypted field
