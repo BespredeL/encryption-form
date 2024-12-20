@@ -4,11 +4,10 @@ namespace Bespredel\EncryptionForm;
 
 use Bespredel\EncryptionForm\Blade\Directives;
 use Bespredel\EncryptionForm\Console\Commands\GenerateEncryptionKeys;
+use Bespredel\EncryptionForm\Middleware\DecryptRequestFields;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Bespredel\EncryptionForm\Middleware\DecryptRequestFields;
-
 
 class EncryptionFormServiceProvider extends ServiceProvider
 {

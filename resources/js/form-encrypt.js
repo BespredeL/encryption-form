@@ -124,7 +124,7 @@
         attachToForms() {
             const forms = document.querySelectorAll('[data-encrypt-form]');
             forms.forEach(form => {
-                if (form.method.toLowerCase() !== 'post') {
+                if (form.method.toLowerCase() === 'get') {
                     console.warn(`Skipping form with method "${form.method}": ${form.name || 'unnamed form'}`);
                     return;
                 }

@@ -2,21 +2,21 @@
 
 namespace Bespredel\EncryptionForm\Middleware;
 
+use Bespredel\EncryptionForm\Services\Interfaces\RequestDecryptorInterface;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Bespredel\EncryptionForm\Services\RequestDecryptor;
 
 class DecryptRequestFields
 {
     /**
      * Request decryptor
      *
-     * @var RequestDecryptor
+     * @var RequestDecryptorInterface
      */
-    protected $decryptor;
+    protected RequestDecryptorInterface $decryptor;
 
-    public function __construct(RequestDecryptor $decryptor)
+    public function __construct(RequestDecryptorInterface $decryptor)
     {
         $this->decryptor = $decryptor;
     }
