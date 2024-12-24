@@ -15,7 +15,9 @@
             this.publicKey = publicKey;
 
             if (typeof JSEncrypt !== 'function') {
-                throw new Error('JSEncrypt library is not available.');
+                console.error('JSEncrypt library is not available. Please ensure the library is loaded and try again.');
+                this.encryptor = null; // Disable encryption functionality
+                return;
             }
 
             this.encryptor = new JSEncrypt();
@@ -40,6 +42,14 @@
          * @return {string}
          */
         encryptField(value) {
+            if (!this.encryptor) {
+                throw new Error('Encryption functionality is disabled.');
+            }
+
+            if (typeof value !== 'string' || value.trim() === '') {
+                throw new Error('Invalid input value. Value must be a non-empty string.');
+            }
+
             const encrypted = this.encryptor.encrypt(value);
             if (!encrypted) {
                 throw new Error('Failed to encrypt field value.');
@@ -69,13 +79,43 @@
          * @param {HTMLFormElement} form
          */
         askUserForAction(form) {
-            const askText = window.ENCRYPTION_FORM.trans('Encryption is not available. Do you want to submit the form without encryption?');
-            const userDecision = confirm(askText);
-            if (userDecision) {
+            // Create modal elements
+            const modal = document.createElement('div');
+            modal.className = 'form-encrypt-modal';
+
+            const modalContent = document.createElement('div');
+            modalContent.className = 'form-encrypt-modal-content';
+
+            const message = document.createElement('p');
+            message.textContent = window.ENCRYPTION_FORM.trans('Encryption is not available. Do you want to submit the form without data encryption?');
+            modalContent.appendChild(message);
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'form-encrypt-modal-buttons';
+
+            const confirmButton = document.createElement('button');
+            confirmButton.textContent = window.ENCRYPTION_FORM.trans('Submit');
+            confirmButton.className = 'form-encrypt-modal-confirm';
+            confirmButton.onclick = () => {
+                document.body.removeChild(modal);
                 form.submit();
-            } else {
+            };
+
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = window.ENCRYPTION_FORM.trans('Cancel');
+            cancelButton.className = 'form-encrypt-modal-cancel';
+            cancelButton.onclick = () => {
+                document.body.removeChild(modal);
                 this.updateStatus('Form submission canceled by user.', true);
-            }
+            };
+
+            buttonContainer.appendChild(confirmButton);
+            buttonContainer.appendChild(cancelButton);
+
+            modalContent.appendChild(buttonContainer);
+            modal.appendChild(modalContent);
+
+            document.body.appendChild(modal);
         }
 
         /**
@@ -85,30 +125,37 @@
          */
         encryptForm(form) {
             const fields = form.querySelectorAll('[data-encrypt="true"]');
+            const targetFields = fields.length > 0 ? fields : form.querySelectorAll('input, textarea');
+
             try {
-                fields.forEach(field => {
-                    if (field.value) {
-                        if (!field.value || field.type === 'file' || field.type === 'checkbox' || field.type === 'radio') {
-                            console.warn(`Encryption skipped for unsupported input: ${field.name}`);
-                            return;
-                        }
+                targetFields.forEach(field => {
+                    if (field.getAttribute('data-encrypt') === 'false') {
+                        console.warn(`Skipping field: ${field.name}, encryption is disabled.`);
+                        return;
+                    }
 
-                        const encryptedValue = this.encryptField(field.value);
+                    const {value, type, name} = field;
 
-                        if (field.type !== 'text' && field.type !== 'password' && field.type !== 'textarea' && field.type !== 'email') {
-                            // Create a hidden input for the encrypted value
-                            const hiddenField = document.createElement('input');
-                            hiddenField.type = 'hidden';
-                            hiddenField.name = field.name;
-                            hiddenField.value = `${window.ENCRYPTION_FORM.prefix}${encryptedValue}`;
-                            form.appendChild(hiddenField);
+                    if (!value || name === "_token" || type === 'file' || type === 'checkbox' || type === 'radio') {
+                        console.warn(`Encryption skipped for unsupported input: ${name}`);
+                        return;
+                    }
 
-                            // Clear the original number field value to prevent submission
-                            field.name = ''; // Remove the name to avoid duplication
-                            field.value = ''; // Clear the value
-                        } else {
-                            field.value = `${window.ENCRYPTION_FORM.prefix}${encryptedValue}`;
-                        }
+                    const encryptedValue = this.encryptField(value);
+
+                    if (type !== 'text' && type !== 'password' && type !== 'textarea' && type !== 'email') {
+                        // Create a hidden input for the encrypted value
+                        const hiddenField = document.createElement('input');
+                        hiddenField.type = 'hidden';
+                        hiddenField.name = name;
+                        hiddenField.value = `${window.ENCRYPTION_FORM.prefix}${encryptedValue}`;
+                        form.appendChild(hiddenField);
+
+                        // Clear the original number field value to prevent submission
+                        field.name = ''; // Remove the name to avoid duplication
+                        field.value = ''; // Clear the value
+                    } else {
+                        field.value = `${window.ENCRYPTION_FORM.prefix}${encryptedValue}`;
                     }
                 });
                 this.updateStatus('Form encrypted successfully.');
@@ -136,21 +183,27 @@
                     this.updateStatus('Encryption not available.', true);
                 }
 
+                let submitTimeout = null; // For debouncing
+
                 form.addEventListener('submit', (e) => {
                     e.preventDefault();
-                    try {
-                        if (this.isEncryptionAvailable()) {
-                            this.encryptForm(form);
-                            form.submit();
-                        } else {
-                            console.warn('Encryption is not available. Asking user for action.');
-                            this.updateStatus('Encryption not available.', true);
-                            this.askUserForAction(form);
+                    if (submitTimeout) clearTimeout(submitTimeout);
+
+                    submitTimeout = setTimeout(() => {
+                        try {
+                            if (this.isEncryptionAvailable()) {
+                                this.encryptForm(form);
+                                form.submit();
+                            } else {
+                                console.warn('Encryption is not available. Asking user for action.');
+                                this.updateStatus('Encryption not available.', true);
+                                this.askUserForAction(form);
+                            }
+                        } catch (error) {
+                            console.error('Form encryption failed:', error);
+                            this.askUserForAction(form); // Fallback: ask user what to do
                         }
-                    } catch (error) {
-                        console.error('Form encryption failed:', error);
-                        this.askUserForAction(form); // Fallback: ask user what to do
-                    }
+                    }, 300);
                 });
             });
         }

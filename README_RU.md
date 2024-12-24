@@ -79,6 +79,7 @@ Route::middleware('decrypt-form')->group(function () {
 ```html
 
 <head>
+    @encryptFormStyles
     @encryptFormScripts
 </head>
 
@@ -87,22 +88,26 @@ Route::middleware('decrypt-form')->group(function () {
     <input type="text" name="name" data-encrypt="true" placeholder="Enter your name" />
     <input type="email" name="email" data-encrypt="true" placeholder="Enter your email" />
     <input type="text" name="address" placeholder="Enter your address" />
-   
-   <div class="encrypt-form-status"></div> <!-- Необязательный элемент для отображения статуса работы шифрования -->
-   
+
+    <div class="encrypt-form-status"></div> <!-- Необязательный элемент для отображения статуса работы шифрования -->
+
     <button type="submit">Submit</button>
 </form>
 ```
 
 - Добавьте `data-encrypt-form` в тег `<form>`, чтобы включить шифрование для этой формы.
-- Используйте `data-encrypt="true"` для полей, которые требуют шифрования.
+- Используйте `data-encrypt="true"` для полей, которые требуют шифрования (если данный атрибут не указан, будут зашифрованы все поддерживаемые поля).
 
-Типы полей, которые в данный момент недоступны для шифрования:
+**Типы полей, доступные для шифрования:**
 
-- checkbox
-- radio
-- select
-- file
+- **Input-поля:**
+    - Поддерживаются типы `text`, `email`, `password`, `number`, `date` и аналогичные.
+    - Исключения: `file`, `checkbox`, `radio`, `select`.
+
+- **Textarea:**
+    - Полностью поддерживается.
+
+**!!! Важно учитывать, что зашифрованное значение будет длиннее исходного, что может повлиять на ограничения длины данных.**
 
 ### Расшифровка данных вручную на сервере
 
