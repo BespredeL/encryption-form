@@ -7,4 +7,6 @@ return [
     'Failed to encrypt form.'                                                         => 'Не удалось зашифровать форму.',
     'Encryption available.'                                                           => 'Шифрование формы доступно.',
     'Encryption not available.'                                                       => 'Шифрование формы недоступно.',
+    'Submit'                                                                          => 'Отправить',
+    'Cancel'                                                                          => 'Отменить',
 ];

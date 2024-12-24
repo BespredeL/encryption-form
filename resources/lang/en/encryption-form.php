@@ -7,4 +7,6 @@ return [
     'Failed to encrypt form.'                                                         => 'Failed to encrypt form.',
     'Encryption available.'                                                           => 'Form encryption is available.',
     'Encryption not available.'                                                       => 'Form encryption is not available.',
+    'Submit'                                                                          => 'Submit',
+    'Cancel'                                                                          => 'Cancel',
 ];

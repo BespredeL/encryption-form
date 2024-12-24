@@ -88,20 +88,24 @@ In your Blade template:
     <input type="text" name="address" placeholder="Enter your address" />
 
     <div class="encrypt-form-status"></div> <!-- Optional element to display encryption operation status -->
-   
+
     <button type="submit">Submit</button>
 </form>
 ```
 
 - Add `data-encrypt-form` to the `<form>` tag to enable encryption for that form.
-- Use `data-encrypt="true"` on individual fields that require encryption.
+- Use `data-encrypt="true"` on individual fields that require encryption (if this attribute is not specified, all supported fields will be encrypted).
 
-Field types currently unavailable for encryption:
+**Types of Fields Available for Encryption:**
 
-- checkbox
-- radio
-- select
-- file
+- **Input Fields:**
+    - Supported types: `text`, `email`, `password`, `number`, `date`, and similar.
+    - Exceptions: `file`, `checkbox`, `radio`, `select`.
+
+- **Textarea:**
+    - Fully supported.
+
+**!!! It is important to note that the encrypted value will be longer than the original value, which may affect data length constraints.**
 
 ### Manual decrypting data on the server
 
