@@ -24,7 +24,6 @@ class Directives
         });
 
         Blade::directive('encryptFormScripts', function () {
-
             if (!config('encryption-form.enabled', true)) {
                 return '';
             }
