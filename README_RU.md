@@ -84,7 +84,6 @@ Route::middleware('decrypt-form')->group(function () {
 </head>
 
 <form data-encrypt-form action="/submit" method="POST">
-    @csrf
     <input type="text" name="name" data-encrypt="true" placeholder="Enter your name" />
     <input type="email" name="email" data-encrypt="true" placeholder="Enter your email" />
     <input type="text" name="address" placeholder="Enter your address" />
@@ -95,8 +94,9 @@ Route::middleware('decrypt-form')->group(function () {
 </form>
 ```
 
-- Добавьте `data-encrypt-form` в тег `<form>`, чтобы включить шифрование для этой формы.
-- Используйте `data-encrypt="true"` для полей, которые требуют шифрования (если данный атрибут не указан, будут зашифрованы все поддерживаемые поля).
+- Добавьте `data-encrypt-form` в тег `<form>`, чтобы включить шифрование для этой формы. Будут зашифрованы все поддерживаемые поля формы.
+    - Используйте `data-encrypt="true"` для полей, которые требуют шифрования. Все другие поля **не** будут зашифрованы.
+    - Используйте `data-encrypt="false"` для полей, которые не требуют шифрования. Все другие поля будут зашифрованы.
 
 **Типы полей, доступные для шифрования:**
 
