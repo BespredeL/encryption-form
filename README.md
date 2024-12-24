@@ -83,7 +83,6 @@ In your Blade template:
 </head>
 
 <form data-encrypt-form action="/submit" method="POST">
-    @csrf
     <input type="text" name="name" data-encrypt="true" placeholder="Enter your name" />
     <input type="email" name="email" data-encrypt="true" placeholder="Enter your email" />
     <input type="text" name="address" placeholder="Enter your address" />
