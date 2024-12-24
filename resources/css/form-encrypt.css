@@ -48,6 +48,11 @@
     margin: 0 10px;
 }
 
+.form-encrypt-modal-confirm:hover,
+.form-encrypt-modal-cancel:hover {
+    opacity: 0.8;
+}
+
 .form-encrypt-modal-confirm {
     background-color: #4CAF50;
     color: #fff;

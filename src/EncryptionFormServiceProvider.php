@@ -27,6 +27,7 @@ class EncryptionFormServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/encryption-form.php' => config_path('encryption-form.php'),
             __DIR__ . '/../resources/js'               => public_path('vendor/encryption-form/js'),
+            __DIR__ . '/../resources/css'              => public_path('vendor/encryption-form/css'),
             __DIR__ . '/../resources/lang'             => $langPath,
         ], 'encryption-form');
 

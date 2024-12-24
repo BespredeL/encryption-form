@@ -79,21 +79,16 @@
          * @param {HTMLFormElement} form
          */
         askUserForAction(form) {
-            const askText = window.ENCRYPTION_FORM.trans('Encryption is not available. Do you want to submit the form without encryption?');
-            /*const userDecision = confirm(askText);
-            if (userDecision) {
-                form.submit();
-            } else {
-                this.updateStatus('Form submission canceled by user.', true);
-            }*/
-
             // Create modal elements
             const modal = document.createElement('div');
             modal.className = 'form-encrypt-modal';
 
+            const modalContent = document.createElement('div');
+            modalContent.className = 'form-encrypt-modal-content';
+
             const message = document.createElement('p');
-            message.textContent = askText;
-            modal.appendChild(message);
+            message.textContent = window.ENCRYPTION_FORM.trans('Encryption is not available. Do you want to submit the form without data encryption?');
+            modalContent.appendChild(message);
 
             const buttonContainer = document.createElement('div');
             buttonContainer.className = 'form-encrypt-modal-buttons';
@@ -116,7 +111,9 @@
 
             buttonContainer.appendChild(confirmButton);
             buttonContainer.appendChild(cancelButton);
-            modal.appendChild(buttonContainer);
+
+            modalContent.appendChild(buttonContainer);
+            modal.appendChild(modalContent);
 
             document.body.appendChild(modal);
         }
@@ -129,30 +126,36 @@
         encryptForm(form) {
             const fields = form.querySelectorAll('[data-encrypt="true"]');
             const targetFields = fields.length > 0 ? fields : form.querySelectorAll('input, textarea');
+
             try {
                 targetFields.forEach(field => {
-                    if (field.value) {
-                        if (!field.value || field.type === 'file' || field.type === 'checkbox' || field.type === 'radio') {
-                            console.warn(`Encryption skipped for unsupported input: ${field.name}`);
-                            return;
-                        }
+                    if (field.getAttribute('data-encrypt') === 'false') {
+                        console.warn(`Skipping field: ${field.name}, encryption is disabled.`);
+                        return;
+                    }
 
-                        const encryptedValue = this.encryptField(field.value);
+                    const {value, type, name} = field;
 
-                        if (field.type !== 'text' && field.type !== 'password' && field.type !== 'textarea' && field.type !== 'email') {
-                            // Create a hidden input for the encrypted value
-                            const hiddenField = document.createElement('input');
-                            hiddenField.type = 'hidden';
-                            hiddenField.name = field.name;
-                            hiddenField.value = `${window.ENCRYPTION_FORM.prefix}${encryptedValue}`;
-                            form.appendChild(hiddenField);
+                    if (!value || name === "_token" || type === 'file' || type === 'checkbox' || type === 'radio') {
+                        console.warn(`Encryption skipped for unsupported input: ${name}`);
+                        return;
+                    }
 
-                            // Clear the original number field value to prevent submission
-                            field.name = ''; // Remove the name to avoid duplication
-                            field.value = ''; // Clear the value
-                        } else {
-                            field.value = `${window.ENCRYPTION_FORM.prefix}${encryptedValue}`;
-                        }
+                    const encryptedValue = this.encryptField(value);
+
+                    if (type !== 'text' && type !== 'password' && type !== 'textarea' && type !== 'email') {
+                        // Create a hidden input for the encrypted value
+                        const hiddenField = document.createElement('input');
+                        hiddenField.type = 'hidden';
+                        hiddenField.name = name;
+                        hiddenField.value = `${window.ENCRYPTION_FORM.prefix}${encryptedValue}`;
+                        form.appendChild(hiddenField);
+
+                        // Clear the original number field value to prevent submission
+                        field.name = ''; // Remove the name to avoid duplication
+                        field.value = ''; // Clear the value
+                    } else {
+                        field.value = `${window.ENCRYPTION_FORM.prefix}${encryptedValue}`;
                     }
                 });
                 this.updateStatus('Form encrypted successfully.');
