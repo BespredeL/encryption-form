@@ -15,6 +15,14 @@ class Directives
      */
     public static function register(): void
     {
+        Blade::directive('encryptFormStyles', function () {
+            if (!config('encryption-form.enabled', true)) {
+                return '';
+            }
+
+            return '<link rel="stylesheet" href="/vendor/encryption-form/css/form-encrypt.css">';
+        });
+
         Blade::directive('encryptFormScripts', function () {
 
             if (!config('encryption-form.enabled', true)) {
