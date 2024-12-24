@@ -78,6 +78,7 @@ In your Blade template:
 ```html
 
 <head>
+    @encryptFormStyles
     @encryptFormScripts
 </head>
 

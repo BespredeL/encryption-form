@@ -79,6 +79,7 @@ Route::middleware('decrypt-form')->group(function () {
 ```html
 
 <head>
+    @encryptFormStyles
     @encryptFormScripts
 </head>
 
