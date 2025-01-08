@@ -60,7 +60,7 @@
 
 protected $middleware = [
     // Другое промежуточное программное обеспечение
-    \Bespredel\EncryptionForm\Middleware\DecryptRequestFields::класс,
+    \Bespredel\EncryptionForm\Middleware\DecryptRequestFields::class,
 ]
 ```
 
