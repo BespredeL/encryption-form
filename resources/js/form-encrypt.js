@@ -40,7 +40,7 @@ class FormEncryptor {
      * @param {string} value
      * @return {string}
      */
-    encryptField(value) {
+    encryptValue(value) {
         if (!this.encryptor) {
             throw new Error('Encryption functionality is disabled.');
         }
@@ -140,7 +140,7 @@ class FormEncryptor {
                     return;
                 }
 
-                const encryptedValue = this.encryptField(value);
+                const encryptedValue = this.encryptValue(value);
 
                 if (type !== 'text' && type !== 'password' && type !== 'textarea' && type !== 'email') {
                     // Create a hidden input for the encrypted value
