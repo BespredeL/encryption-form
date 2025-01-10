@@ -18,7 +18,7 @@ class Directives
         // Styles injection
         Blade::directive('encryptFormStyles', function () {
             return config('encryption-form.enabled', true)
-                ? '<link rel="stylesheet" href="/vendor/encryption-form/css/form-encrypt.css">'
+                ? '<link rel="stylesheet" href="/vendor/encryption-form/css/form-encrypt.min.css">'
                 : '';
         });
 
@@ -40,7 +40,7 @@ class Directives
 
             // Generate SRI hashes dynamically
             $jsEncryptPath = public_path('vendor/encryption-form/js/jsencrypt.min.js');
-            $formEncryptPath = public_path('vendor/encryption-form/js/form-encrypt.js');
+            $formEncryptPath = public_path('vendor/encryption-form/js/form-encrypt.min.js');
 
             if (!file_exists($jsEncryptPath) || !file_exists($formEncryptPath)) {
                 throw new \RuntimeException('Required JavaScript files are missing.');
@@ -51,7 +51,7 @@ class Directives
 
             return <<<HTML
 <script src="/vendor/encryption-form/js/jsencrypt.min.js" integrity="sha384-{$jsEncryptSri}" crossorigin="anonymous"></script>
-<script src="/vendor/encryption-form/js/form-encrypt.js" integrity="sha384-{$formEncryptSri}" crossorigin="anonymous"></script>
+<script src="/vendor/encryption-form/js/form-encrypt.min.js" integrity="sha384-{$formEncryptSri}" crossorigin="anonymous"></script>
 <script>
     window.ENCRYPTION_FORM = {
         'public_key': `{$escapedKey}`,
