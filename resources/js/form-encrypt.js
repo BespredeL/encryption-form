@@ -6,7 +6,15 @@
  * @license MIT
  */
 
-(function () {
+(function (global, factory) {
+    if (typeof module === 'object' && typeof module.exports === 'object') {
+        module.exports = factory();
+    } else if (typeof define === 'function' && define.amd) {
+        define([], factory);
+    } else {
+        global.FormEncryptor = factory();
+    }
+})(typeof window !== 'undefined' ? window : this, function () {
     class FormEncryptor {
         constructor(publicKey) {
             if (!publicKey) {
@@ -32,16 +40,17 @@
         isEncryptionAvailable() {
             const testString = 'test';
             const encrypted = this.encryptor.encrypt(testString);
-            return encrypted !== false;
+            return encrypted !== false && encrypted === testString;
         }
 
         /**
          * Encrypt field value
          *
          * @param {string} value
+         *
          * @return {string}
          */
-        encryptField(value) {
+        encryptValue(value) {
             if (!this.encryptor) {
                 throw new Error('Encryption functionality is disabled.');
             }
@@ -62,6 +71,8 @@
          *
          * @param {string} message
          * @param {boolean} isError
+         *
+         * @return {void}
          */
         updateStatus(message, isError = false) {
             const statusElement = document.querySelector('.encrypt-form-status');
@@ -77,6 +88,8 @@
          * Ask user for action
          *
          * @param {HTMLFormElement} form
+         *
+         * @return {void}
          */
         askUserForAction(form) {
             // Create modal elements
@@ -122,6 +135,8 @@
          * Encrypt form fields
          *
          * @param {HTMLFormElement} form
+         *
+         * @return {void}
          */
         encryptForm(form) {
             const fields = form.querySelectorAll('[data-encrypt="true"]');
@@ -141,7 +156,7 @@
                         return;
                     }
 
-                    const encryptedValue = this.encryptField(value);
+                    const encryptedValue = this.encryptValue(value);
 
                     if (type !== 'text' && type !== 'password' && type !== 'textarea' && type !== 'email') {
                         // Create a hidden input for the encrypted value
@@ -167,6 +182,8 @@
 
         /**
          * Attach encryption to forms
+         *
+         * @return {void}
          */
         attachToForms() {
             const forms = document.querySelectorAll('[data-encrypt-form]');
@@ -209,17 +226,19 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        try {
-            if (!window.ENCRYPTION_FORM.public_key) {
-                console.error('ENCRYPTION_FORM_PUBLIC_KEY is not set!');
-                return;
-            }
+    return FormEncryptor;
+});
 
-            const formEncryptor = new FormEncryptor(window.ENCRYPTION_FORM.public_key);
-            formEncryptor.attachToForms();
-        } catch (error) {
-            console.error('Failed to initialize FormEncryptor:', error);
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        if (!window.ENCRYPTION_FORM.public_key) {
+            console.error('ENCRYPTION_FORM_PUBLIC_KEY is not set!');
+            return;
         }
-    });
-})();
+
+        const formEncryptor = new FormEncryptor(window.ENCRYPTION_FORM.public_key);
+        formEncryptor.attachToForms();
+    } catch (error) {
+        console.error('Failed to initialize FormEncryptor:', error);
+    }
+});

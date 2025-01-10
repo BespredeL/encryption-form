@@ -15,14 +15,14 @@ class Directives
      */
     public static function register(): void
     {
+        // Styles injection
         Blade::directive('encryptFormStyles', function () {
-            if (!config('encryption-form.enabled', true)) {
-                return '';
-            }
-
-            return '<link rel="stylesheet" href="/vendor/encryption-form/css/form-encrypt.css">';
+            return config('encryption-form.enabled', true)
+                ? '<link rel="stylesheet" href="/vendor/encryption-form/css/form-encrypt.min.css">'
+                : '';
         });
 
+        // Scripts injection
         Blade::directive('encryptFormScripts', function () {
             if (!config('encryption-form.enabled', true)) {
                 return '';
@@ -32,26 +32,26 @@ class Directives
             $prefix = config('encryption-form.prefix', 'ENCF:');
 
             if (!$publicKey) {
-                throw new \Exception('Public key for encryption is not set in the configuration.');
+                throw new \RuntimeException('Public key for encryption is not set in the configuration.');
             }
 
             $escapedKey = addslashes($publicKey);
             $translations = json_encode(trans('encryption-form::encryption-form'));
 
             // Generate SRI hashes dynamically
-            $jsencryptPath = public_path('vendor/encryption-form/js/jsencrypt.min.js');
-            $formEncryptPath = public_path('vendor/encryption-form/js/form-encrypt.js');
+            $jsEncryptPath = public_path('vendor/encryption-form/js/jsencrypt.min.js');
+            $formEncryptPath = public_path('vendor/encryption-form/js/form-encrypt.min.js');
 
-            if (!file_exists($jsencryptPath) || !file_exists($formEncryptPath)) {
-                throw new \Exception('Required JavaScript files are missing.');
+            if (!file_exists($jsEncryptPath) || !file_exists($formEncryptPath)) {
+                throw new \RuntimeException('Required JavaScript files are missing.');
             }
 
-            $jsencryptSri = base64_encode(hash_file('sha384', $jsencryptPath, true));
+            $jsEncryptSri = base64_encode(hash_file('sha384', $jsEncryptPath, true));
             $formEncryptSri = base64_encode(hash_file('sha384', $formEncryptPath, true));
 
             return <<<HTML
-<script src="/vendor/encryption-form/js/jsencrypt.min.js" integrity="sha384-{$jsencryptSri}" crossorigin="anonymous"></script>
-<script src="/vendor/encryption-form/js/form-encrypt.js" integrity="sha384-{$formEncryptSri}" crossorigin="anonymous"></script>
+<script src="/vendor/encryption-form/js/jsencrypt.min.js" integrity="sha384-{$jsEncryptSri}" crossorigin="anonymous"></script>
+<script src="/vendor/encryption-form/js/form-encrypt.min.js" integrity="sha384-{$formEncryptSri}" crossorigin="anonymous"></script>
 <script>
     window.ENCRYPTION_FORM = {
         'public_key': `{$escapedKey}`,

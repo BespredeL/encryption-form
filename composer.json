@@ -1,12 +1,17 @@
 {
     "name": "bespredel/encryption-form",
-    "description": "Encrypt form fields with public key before sending to server",
+    "description": "A Laravel package to securely encrypt form fields on the client-side using public key encryption and decrypt them on the server-side using the private key.",
     "keywords": [
         "laravel",
         "form",
         "encryption",
         "security",
-        "public key"
+        "data-privacy",
+        "rsa-encryption",
+        "privacy-protection",
+        "client-side-encryption",
+        "form-encryption",
+        "openssl"
     ],
     "license": "MIT",
     "authors": [
