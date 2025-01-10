@@ -3,7 +3,6 @@
     "description": "A Laravel package to securely encrypt form fields on the client-side using public key encryption and decrypt them on the server-side using the private key.",
     "keywords": [
         "laravel",
-        "form",
         "encryption",
         "security",
         "data-privacy",
