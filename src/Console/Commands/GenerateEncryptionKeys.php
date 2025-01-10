@@ -20,7 +20,7 @@ class GenerateEncryptionKeys extends Command
      *
      * @var string
      */
-    protected $description = 'Generate a new RSA key pair for encryption';
+    protected $description = 'Create a new RSA key pair to encrypt the forms.';
 
     /**
      * Execute the console command.
@@ -58,7 +58,7 @@ class GenerateEncryptionKeys extends Command
         $envPath = base_path('.env');
 
         if (!File::exists($envPath)) {
-            $this->error('The .env file does not exist.');
+            $this->error('The .env file does not exist or cannot be accessed.');
             return;
         }
 

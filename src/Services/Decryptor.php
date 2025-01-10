@@ -10,13 +10,13 @@ class Decryptor implements DecryptorInterface
     /**
      * Decrypt an encrypted field
      *
-     * @param string $value       Encrypted value
-     * @param string $privateKey  Private key for decryption
-     * @param string $fieldPrefix Field prefix
+     * @param string $value         Encrypted value
+     * @param string $privateKey    Private key for decryption
+     * @param string $encDataPrefix Encrypted data prefix
      *
      * @return string|null
      */
-    public function decryptValue(string $value, string $privateKey, string $fieldPrefix): ?string
+    public function decryptValue(string $value, string $privateKey, string $encDataPrefix): ?string
     {
         $res = openssl_pkey_get_private($privateKey);
         if (!$res) {
@@ -24,7 +24,7 @@ class Decryptor implements DecryptorInterface
             return null;
         }
 
-        $decodedValue = base64_decode((string)str($value)->after($fieldPrefix), true);
+        $decodedValue = base64_decode((string)str($value)->after($encDataPrefix), true);
         if ($decodedValue === false) {
             Log::warning('Failed to base64 decode value');
             return null;
@@ -42,17 +42,17 @@ class Decryptor implements DecryptorInterface
     /**
      * Decrypt multiple fields in an array
      *
-     * @param array  $fields      Fields to decrypt
-     * @param string $privateKey  Private key for decryption
-     * @param string $fieldPrefix Field prefix
+     * @param array  $fields        Fields to decrypt
+     * @param string $privateKey    Private key for decryption
+     * @param string $encDataPrefix Encrypted data prefix
      *
      * @return array
      */
-    public function decryptValues(array $fields, string $privateKey, string $fieldPrefix): array
+    public function decryptValues(array $fields, string $privateKey, string $encDataPrefix): array
     {
-        return collect($fields)->mapWithKeys(function ($value, $key) use ($privateKey, $fieldPrefix) {
-            if (is_string($value) && str_starts_with($value, $fieldPrefix)) {
-                return [$key => $this->decryptValue($value, $privateKey, $fieldPrefix)];
+        return collect($fields)->mapWithKeys(function ($value, $key) use ($privateKey, $encDataPrefix) {
+            if (is_string($value) && str_starts_with($value, $encDataPrefix)) {
+                return [$key => $this->decryptValue($value, $privateKey, $encDataPrefix)];
             }
             return [$key => $value];
         })->toArray();
