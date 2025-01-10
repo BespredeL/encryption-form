@@ -2,10 +2,10 @@
 
 namespace Bespredel\EncryptionForm\Services;
 
-use Bespredel\EncryptionForm\Services\Interfaces\RequestDecryptorInterface;
+use Bespredel\EncryptionForm\Services\Contracts\DecryptorInterface;
 use Illuminate\Support\Facades\Log;
 
-class RequestDecryptor implements RequestDecryptorInterface
+class Decryptor implements DecryptorInterface
 {
     /**
      * Decrypt an encrypted field
@@ -48,7 +48,7 @@ class RequestDecryptor implements RequestDecryptorInterface
      *
      * @return array
      */
-    public function decryptFields(array $fields, string $privateKey, string $fieldPrefix): array
+    public function decryptValues(array $fields, string $privateKey, string $fieldPrefix): array
     {
         return collect($fields)->mapWithKeys(function ($value, $key) use ($privateKey, $fieldPrefix) {
             if (is_string($value) && str_starts_with($value, $fieldPrefix)) {

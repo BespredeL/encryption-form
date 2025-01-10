@@ -40,13 +40,14 @@
         isEncryptionAvailable() {
             const testString = 'test';
             const encrypted = this.encryptor.encrypt(testString);
-            return encrypted !== false;
+            return encrypted !== false && encrypted === testString;
         }
 
         /**
          * Encrypt field value
          *
          * @param {string} value
+         *
          * @return {string}
          */
         encryptValue(value) {
@@ -70,6 +71,8 @@
          *
          * @param {string} message
          * @param {boolean} isError
+         *
+         * @return {void}
          */
         updateStatus(message, isError = false) {
             const statusElement = document.querySelector('.encrypt-form-status');
@@ -85,6 +88,8 @@
          * Ask user for action
          *
          * @param {HTMLFormElement} form
+         *
+         * @return {void}
          */
         askUserForAction(form) {
             // Create modal elements
@@ -130,6 +135,8 @@
          * Encrypt form fields
          *
          * @param {HTMLFormElement} form
+         *
+         * @return {void}
          */
         encryptForm(form) {
             const fields = form.querySelectorAll('[data-encrypt="true"]');
@@ -175,6 +182,8 @@
 
         /**
          * Attach encryption to forms
+         *
+         * @return {void}
          */
         attachToForms() {
             const forms = document.querySelectorAll('[data-encrypt-form]');

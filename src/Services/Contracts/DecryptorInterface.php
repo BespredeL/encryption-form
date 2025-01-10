@@ -1,8 +1,8 @@
 <?php
 
-namespace Bespredel\EncryptionForm\Services\Interfaces;
+namespace Bespredel\EncryptionForm\Services\Contracts;
 
-interface RequestDecryptorInterface
+interface DecryptorInterface
 {
     /**
      * Decrypt an encrypted field
@@ -16,7 +16,7 @@ interface RequestDecryptorInterface
     public function decryptValue(string $value, string $privateKey, string $fieldPrefix): ?string;
 
     /**
-     * Decrypt multiple fields in an array
+     * Decrypt multiple values in an array
      *
      * @param array  $fields
      * @param string $privateKey
@@ -24,5 +24,5 @@ interface RequestDecryptorInterface
      *
      * @return array
      */
-    public function decryptFields(array $fields, string $privateKey, string $fieldPrefix): array;
+    public function decryptValues(array $fields, string $privateKey, string $fieldPrefix): array;
 }

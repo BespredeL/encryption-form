@@ -114,12 +114,12 @@ Route::middleware('decrypt-form')->group(function () {
 Используйте класс `RequestDecryptor` для расшифровки данных на сервере:
 
 ```php
-use Bespredel\EncryptionForm\Services\RequestDecryptor;
+use Bespredel\EncryptionForm\Services\Decryptor;
 
 $value = $request->input('name'); // Example for 'name' field
 $privateKey = config('encryption-form.private_key');
 
-$decryptedValue = RequestDecryptor::decryptValue($value, $privateKey);
+$decryptedValue = Decryptor::decryptValue($value, $privateKey);
 ```
 
 Или используйте функцию `openssl_private_decrypt` для расшифровки данных на сервере:
