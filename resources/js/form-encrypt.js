@@ -40,7 +40,7 @@
         isEncryptionAvailable() {
             const testString = 'test';
             const encrypted = this.encryptor.encrypt(testString);
-            return encrypted !== false && encrypted === testString;
+            return encrypted !== false;
         }
 
         /**
