@@ -23,9 +23,7 @@
             this.publicKey = publicKey;
 
             if (typeof JSEncrypt !== 'function') {
-                console.error('JSEncrypt library is not available. Please ensure the library is loaded and try again.');
-                this.encryptor = null; // Disable encryption functionality
-                return;
+                throw new Error('JSEncrypt library is not available. Please ensure the library is loaded and try again.');
             }
 
             this.encryptor = new JSEncrypt();
