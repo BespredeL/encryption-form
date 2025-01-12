@@ -155,12 +155,12 @@ This will update the keys in your `.env` file.
 
 ```php
 return [
-   'public_key'   => env('ENCRYPTION_FORM_PUBLIC_KEY'),
-   'private_key'  => env('ENCRYPTION_FORM_PRIVATE_KEY'),
-   'prefix'       => env('ENCRYPTION_FORM_PREFIX', 'ENCF:'),
-   'key_rotation' => [
-      'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false),
-      'cron_expression' => '0 0 * * *',
+   'public_key'   => env('ENCRYPTION_FORM_PUBLIC_KEY'), // Public key, required
+   'private_key'  => env('ENCRYPTION_FORM_PRIVATE_KEY'), // Private key, required
+   'prefix'       => env('ENCRYPTION_FORM_PREFIX', 'ENCF:'), // Field value prefix, needed for optimization to find encrypted values, default: 'ENCF:'
+   'key_rotation' => [ // Key automatic rotation configuration
+      'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false), // Enable key rotation
+      'cron_expression' => '0 0 * * *', // Cron expression for key rotation
    ],
 ];
 ```

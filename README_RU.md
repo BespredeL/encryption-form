@@ -156,12 +156,12 @@ php artisan encryption-form:generate-keys
 
 ```php
 return [
-   'public_key'   => env('ENCRYPTION_FORM_PUBLIC_KEY'),
-   'private_key'  => env('ENCRYPTION_FORM_PRIVATE_KEY'),
-   'prefix'       => env('ENCRYPTION_FORM_PREFIX', 'ENCF:'),
-   'key_rotation' => [
-      'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false),
-      'cron_expression' => '0 0 * * *',
+   'public_key'   => env('ENCRYPTION_FORM_PUBLIC_KEY'), // Открытый ключ, обязателен
+   'private_key'  => env('ENCRYPTION_FORM_PRIVATE_KEY'), // Закрытый ключ, обязателен
+   'prefix'       => env('ENCRYPTION_FORM_PREFIX', 'ENCF:'), // Префикс значения поля, необходимый для оптимизации поиска зашифрованных значений, по умолчанию: 'ENCF:'
+   'key_rotation' => [ // Настройка автоматической ротации ключей
+      'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false), // Включить ротацию ключей
+      'cron_expression' => '0 0 * * *', // Выражение Cron для ротации ключей
    ],
 ];
 ```
