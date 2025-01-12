@@ -50,8 +50,6 @@ class GenerateEncryptionKeys extends Command
      * @param $publicKey
      *
      * @return void
-     *
-     * @throws FileNotFoundException
      */
     protected function saveKeysToEnv($privateKey, $publicKey): void
     {
@@ -68,11 +66,12 @@ class GenerateEncryptionKeys extends Command
         $envContent = preg_replace('/\nENCRYPTION_FORM_PUBLIC_KEY="[^"]*"/m', '', $envContent);
         $envContent = preg_replace('/\nENCRYPTION_FORM_PRIVATE_KEY="[^"]*"/m', '', $envContent);
 
-        // If there are no keys, add them to the end of the file
+        // Add new public keys
         if (!preg_match('/^ENCRYPTION_FORM_PUBLIC_KEY="/m', $envContent)) {
             $envContent .= "\nENCRYPTION_FORM_PUBLIC_KEY=\"{$publicKey}\"";
         }
 
+        // Add new private keys
         if (!preg_match('/^ENCRYPTION_FORM_PRIVATE_KEY="/m', $envContent)) {
             $envContent .= "\nENCRYPTION_FORM_PRIVATE_KEY=\"{$privateKey}\"";
         }
