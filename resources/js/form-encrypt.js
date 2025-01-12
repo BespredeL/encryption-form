@@ -143,21 +143,19 @@
             const targetFields = fields.length > 0 ? fields : form.querySelectorAll('input, textarea');
 
             try {
-                targetFields.forEach(field => {
+                Array.from(targetFields).map((field) => {
                     if (field.getAttribute('data-encrypt') === 'false') {
                         console.warn(`Skipping field: ${field.name}, encryption is disabled.`);
                         return;
                     }
 
                     const {value, type, name} = field;
-
                     if (!value || name === "_token" || type === 'file' || type === 'checkbox' || type === 'radio') {
                         console.warn(`Encryption skipped for unsupported input: ${name}`);
                         return;
                     }
 
                     const encryptedValue = this.encryptValue(value);
-
                     if (type !== 'text' && type !== 'password' && type !== 'textarea' && type !== 'email') {
                         // Create a hidden input for the encrypted value
                         const hiddenField = document.createElement('input');
@@ -187,9 +185,10 @@
          */
         attachToForms() {
             const forms = document.querySelectorAll('[data-encrypt-form]');
-            forms.forEach(form => {
+            Array.from(forms).map((form) => {
                 if (form.method.toLowerCase() === 'get') {
                     console.warn(`Skipping form with method "${form.method}": ${form.name || 'unnamed form'}`);
+                    this.updateStatus('Encryption not available.', true);
                     return;
                 }
 
@@ -201,7 +200,6 @@
                 }
 
                 let submitTimeout = null; // For debouncing
-
                 form.addEventListener('submit', (e) => {
                     e.preventDefault();
                     if (submitTimeout) clearTimeout(submitTimeout);
@@ -229,16 +227,25 @@
     return FormEncryptor;
 });
 
+/**
+ * Initialize FormEncryptor
+ */
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        if (!window.ENCRYPTION_FORM.public_key) {
-            console.error('ENCRYPTION_FORM_PUBLIC_KEY is not set!');
-            return;
-        }
+        const publicKeyFromServer = window.ENCRYPTION_FORM.public_key;
 
-        const formEncryptor = new FormEncryptor(window.ENCRYPTION_FORM.public_key);
+        const formEncryptor = new FormEncryptor(publicKeyFromServer);
         formEncryptor.attachToForms();
     } catch (error) {
         console.error('Failed to initialize FormEncryptor:', error);
+
+        // Fallback: show alert message to the user if encryption is not available
+        alert(window.ENCRYPTION_FORM.trans('Encryption not available.'));
+
+        const statusElement = document.querySelector('.encrypt-form-status');
+        if (statusElement) {
+            statusElement.textContent = window.ENCRYPTION_FORM.trans('Encryption not available.');
+            statusElement.style.color = 'red';
+        }
     }
 });
