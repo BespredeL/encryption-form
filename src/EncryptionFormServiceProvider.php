@@ -32,11 +32,10 @@ class EncryptionFormServiceProvider extends ServiceProvider
         ], 'encryption-form');
 
         // Registering the path to language files
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, 'encryption-form');
-        } else {
-            $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'encryption-form');
+        if (!is_dir($langPath)) {
+            $langPath = __DIR__ . '/../resources/lang';
         }
+        $this->loadTranslationsFrom($langPath, 'encryption-form');
 
         $this->registerMiddleware($router);
         $this->registerCommands();
