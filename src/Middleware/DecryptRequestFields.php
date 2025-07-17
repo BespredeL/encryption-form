@@ -3,7 +3,6 @@
 namespace Bespredel\EncryptionForm\Middleware;
 
 use Bespredel\EncryptionForm\Services\Contracts\DecryptorInterface;
-use Bespredel\EncryptionForm\Services\Decryptor;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -17,7 +16,7 @@ class  DecryptRequestFields
      */
     protected DecryptorInterface $decryptor;
 
-    public function __construct(Decryptor $decryptor)
+    public function __construct(DecryptorInterface $decryptor)
     {
         $this->decryptor = $decryptor;
     }

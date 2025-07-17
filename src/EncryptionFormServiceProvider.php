@@ -5,6 +5,8 @@ namespace Bespredel\EncryptionForm;
 use Bespredel\EncryptionForm\Blade\Directives;
 use Bespredel\EncryptionForm\Console\Commands\GenerateEncryptionKeys;
 use Bespredel\EncryptionForm\Middleware\DecryptRequestFields;
+use Bespredel\EncryptionForm\Services\Contracts\DecryptorInterface;
+use Bespredel\EncryptionForm\Services\Decryptor;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
@@ -32,11 +34,10 @@ class EncryptionFormServiceProvider extends ServiceProvider
         ], 'encryption-form');
 
         // Registering the path to language files
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, 'encryption-form');
-        } else {
-            $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'encryption-form');
+        if (!is_dir($langPath)) {
+            $langPath = __DIR__ . '/../resources/lang';
         }
+        $this->loadTranslationsFrom($langPath, 'encryption-form');
 
         $this->registerMiddleware($router);
         $this->registerCommands();
@@ -51,10 +52,9 @@ class EncryptionFormServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/encryption-form.php',
-            'encryption-form'
-        );
+        $this->app->bind(DecryptorInterface::class, Decryptor::class);
+
+        $this->mergeConfigFrom(__DIR__ . '/../config/encryption-form.php', 'encryption-form');
     }
 
     /**
@@ -84,7 +84,7 @@ class EncryptionFormServiceProvider extends ServiceProvider
             $this->app->booted(function () {
                 app(Schedule::class)
                     ->command('encryption-form:generate-keys')
-                    ->cron(config('encryption-form.key_rotation.cron_expression'));
+                    ->cron(config('encryption-form.key_rotation.cron_expression', '0 0 * * *'));
             });
         }
     }
