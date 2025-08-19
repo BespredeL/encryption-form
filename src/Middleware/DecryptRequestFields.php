@@ -31,7 +31,7 @@ class  DecryptRequestFields
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        if (!config('encryption-form.enabled', true)) {
+        if (!encryption_form_enabled()) {
             return $next($request);
         }
 

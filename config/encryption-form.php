@@ -29,4 +29,9 @@ return [
         // Cron expression for scheduling key rotation (default: daily at midnight)
         'cron_expression' => '0 0 * * *',
     ],
+
+    // Skip encryption for specific IP addresses
+    'skip_for_ips' => [
+
+    ],
 ];
