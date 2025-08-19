@@ -3,7 +3,6 @@
 use Illuminate\Support\Str;
 
 if (!function_exists('encryption_form_enabled')) {
-
     /**
      * Check if encryption form is enabled
      *
