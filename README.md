@@ -162,6 +162,9 @@ return [
       'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false), // Enable key rotation
       'cron_expression' => '0 0 * * *', // Cron expression for key rotation
    ],
+    'skip_for_ips' => [ // Skip encryption for specific IP addresses
+        //'127.0.0.1',
+    ],
 ];
 ```
 

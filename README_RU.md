@@ -163,6 +163,9 @@ return [
       'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false), // Включить ротацию ключей
       'cron_expression' => '0 0 * * *', // Выражение Cron для ротации ключей
    ],
+   'skip_for_ips' => [ // Пропустить шифрование для конкретных IP-адресов
+       //'127.0.0.1',
+    ],
 ];
 ```
 

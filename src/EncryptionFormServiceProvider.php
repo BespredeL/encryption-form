@@ -55,6 +55,11 @@ class EncryptionFormServiceProvider extends ServiceProvider
         $this->app->bind(DecryptorInterface::class, Decryptor::class);
 
         $this->mergeConfigFrom(__DIR__ . '/../config/encryption-form.php', 'encryption-form');
+
+        // Registering helpers
+        if (file_exists(__DIR__ . '/Support/helpers.php')) {
+            require_once __DIR__ . '/Support/helpers.php';
+        }
     }
 
     /**
