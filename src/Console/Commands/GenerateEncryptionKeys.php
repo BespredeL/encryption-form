@@ -77,17 +77,19 @@ class GenerateEncryptionKeys extends Command
 
         $envContent = File::get($envPath);
 
-        // Remove existing keys (handle both with and without quotes, and multiline keys)
-        $envContent = preg_replace('/\nENCRYPTION_FORM_PUBLIC_KEY=.*?(?=\n|$)/m', '', $envContent);
-        $envContent = preg_replace('/\nENCRYPTION_FORM_PRIVATE_KEY=.*?(?=\n|$)/m', '', $envContent);
+        // Remove existing keys
+        $envContent = preg_replace('/\nENCRYPTION_FORM_PUBLIC_KEY="[^"]*"/m', '', $envContent);
+        $envContent = preg_replace('/\nENCRYPTION_FORM_PRIVATE_KEY="[^"]*"/m', '', $envContent);
 
-        // Escape keys for .env file (handle multiline keys properly)
-        $escapedPublicKey = str_replace(["\n", "\r"], ['\\n', '\\r'], $publicKey);
-        $escapedPrivateKey = str_replace(["\n", "\r"], ['\\n', '\\r'], $privateKey);
+        // Add new public keys
+        if (!preg_match('/^ENCRYPTION_FORM_PUBLIC_KEY="/m', $envContent)) {
+            $envContent .= "\nENCRYPTION_FORM_PUBLIC_KEY=\"{$publicKey}\"";
+        }
 
-        // Add new keys at the end
-        $envContent .= "\nENCRYPTION_FORM_PUBLIC_KEY=\"{$escapedPublicKey}\"";
-        $envContent .= "\nENCRYPTION_FORM_PRIVATE_KEY=\"{$escapedPrivateKey}\"";
+        // Add new private keys
+        if (!preg_match('/^ENCRYPTION_FORM_PRIVATE_KEY="/m', $envContent)) {
+            $envContent .= "\nENCRYPTION_FORM_PRIVATE_KEY=\"{$privateKey}\"";
+        }
 
         if (!File::put($envPath, $envContent)) {
             $this->error('Failed to write keys to .env file.');
