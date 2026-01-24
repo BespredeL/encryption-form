@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bespredel\EncryptionForm\Middleware;
 
 use Bespredel\EncryptionForm\Services\Contracts\DecryptorInterface;
@@ -7,8 +9,20 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class  DecryptRequestFields
+class DecryptRequestFields
 {
+    /**
+     * System fields that should not be decrypted
+     *
+     * @var array<string>
+     */
+    protected array $excludedFields = [
+        '_token',
+        '_method',
+        '_previous',
+        '_flash',
+    ];
+
     /**
      * Request decryptor
      *
@@ -16,6 +30,9 @@ class  DecryptRequestFields
      */
     protected DecryptorInterface $decryptor;
 
+    /**
+     * @param DecryptorInterface $decryptor
+     */
     public function __construct(DecryptorInterface $decryptor)
     {
         $this->decryptor = $decryptor;
@@ -42,7 +59,14 @@ class  DecryptRequestFields
         }
 
         $fieldPrefix = config('encryption-form.prefix', 'ENCF:');
-        $decrypted = $this->decryptor->decryptValues($request->all(), $privateKey, $fieldPrefix);
+
+        // Get all request data excluding system fields
+        $requestData = $request->except($this->excludedFields);
+
+        // Decrypt only non-system fields
+        $decrypted = $this->decryptor->decryptValues($requestData, $privateKey, $fieldPrefix);
+
+        // Merge decrypted values back, preserving system fields
         $request->merge($decrypted);
 
         return $next($request);

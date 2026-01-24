@@ -111,15 +111,34 @@ Route::middleware('decrypt-form')->group(function () {
 
 ### Расшифровка данных вручную на сервере
 
-Используйте класс `RequestDecryptor` для расшифровки данных на сервере:
+Используйте класс `Decryptor` для расшифровки данных на сервере:
 
 ```php
 use Bespredel\EncryptionForm\Services\Decryptor;
 
-$value = $request->input('name'); // Example for 'name' field
+$decryptor = new Decryptor();
+$value = $request->input('name'); // Пример для поля 'name'
 $privateKey = config('encryption-form.private_key');
+$prefix = config('encryption-form.prefix', 'ENCF:');
 
-$decryptedValue = Decryptor::decryptValue($value, $privateKey);
+$decryptedValue = $decryptor->decryptValue($value, $privateKey, $prefix);
+```
+
+Или используйте dependency injection:
+
+```php
+use Bespredel\EncryptionForm\Services\Contracts\DecryptorInterface;
+
+public function __construct(DecryptorInterface $decryptor)
+{
+    $this->decryptor = $decryptor;
+}
+
+// В вашем методе:
+$value = $request->input('name');
+$privateKey = config('encryption-form.private_key');
+$prefix = config('encryption-form.prefix', 'ENCF:');
+$decryptedValue = $this->decryptor->decryptValue($value, $privateKey, $prefix);
 ```
 
 Или используйте функцию `openssl_private_decrypt` для расшифровки данных на сервере:

@@ -110,15 +110,34 @@ In your Blade template:
 
 ### Manual decrypting data on the server
 
-Use the `RequestDecryptor` class to decrypt data on the server:
+Use the `Decryptor` class to decrypt data on the server:
 
 ```php
 use Bespredel\EncryptionForm\Services\Decryptor;
 
+$decryptor = new Decryptor();
 $value = $request->input('name'); // Example for 'name' field
 $privateKey = config('encryption-form.private_key');
+$prefix = config('encryption-form.prefix', 'ENCF:');
 
-$decryptedValue = Decryptor::decryptValue($value, $privateKey);
+$decryptedValue = $decryptor->decryptValue($value, $privateKey, $prefix);
+```
+
+Or use dependency injection:
+
+```php
+use Bespredel\EncryptionForm\Services\Contracts\DecryptorInterface;
+
+public function __construct(DecryptorInterface $decryptor)
+{
+    $this->decryptor = $decryptor;
+}
+
+// In your method:
+$value = $request->input('name');
+$privateKey = config('encryption-form.private_key');
+$prefix = config('encryption-form.prefix', 'ENCF:');
+$decryptedValue = $this->decryptor->decryptValue($value, $privateKey, $prefix);
 ```
 
 Or use the `openssl_private_decrypt` function to decrypt data on the server:

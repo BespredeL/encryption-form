@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bespredel\EncryptionForm\Support;
 
+use Bespredel\EncryptionForm\Exceptions\MissingResourceException;
 use Illuminate\Support\Facades\Cache;
 
 class Render
@@ -10,6 +13,8 @@ class Render
      * Render styles
      *
      * @return string
+     *
+     * @throws MissingResourceException
      */
     public static function styles(): string
     {
@@ -20,7 +25,7 @@ class Render
         $formEncryptStylePath = public_path('vendor/encryption-form/css/form-encrypt.min.css');
 
         if (!file_exists($formEncryptStylePath)) {
-            throw new \RuntimeException('Required CSS files are missing.');
+            throw new MissingResourceException('Required CSS files are missing. Please run: php artisan vendor:publish --tag=encryption-form');
         }
 
         $lastModified = filemtime($formEncryptStylePath);
@@ -38,6 +43,8 @@ class Render
      * Render scripts
      *
      * @return string
+     *
+     * @throws MissingResourceException
      */
     public static function scripts(): string
     {
@@ -49,7 +56,7 @@ class Render
         $formEncryptPath = public_path('vendor/encryption-form/js/form-encrypt.min.js');
 
         if (!file_exists($jsEncryptPath) || !file_exists($formEncryptPath)) {
-            throw new \RuntimeException('Required JavaScript files are missing.');
+            throw new MissingResourceException('Required JavaScript files are missing. Please run: php artisan vendor:publish --tag=encryption-form');
         }
 
         $jsEncryptLastModified = filemtime($jsEncryptPath);

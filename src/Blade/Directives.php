@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bespredel\EncryptionForm\Blade;
 
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Cache;
 
 class Directives
 {
