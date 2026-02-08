@@ -27,7 +27,8 @@
         "illuminate/support": "^9.0|^10.0|^11.0|^12.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5|^10.0|^11.0"
+        "phpunit/phpunit": "^9.5|^10.0|^11.0",
+        "orchestra/testbench": "^7.0|^8.0|^9.0|^10.0"
     },
     "autoload": {
         "psr-4": {
@@ -38,6 +39,10 @@
         "psr-4": {
             "Bespredel\\EncryptionForm\\Tests\\": "tests"
         }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "phpunit": "phpunit"
     },
     "extra": {
         "laravel": {
