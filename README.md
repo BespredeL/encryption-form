@@ -1,4 +1,4 @@
-# Encryption Form
+# EncryptionForm - Secure Client-Side Form Encryption
 
 [![Readme EN](https://img.shields.io/badge/README-EN-blue.svg)](https://github.com/bespredel/encryption-form/blob/master/README.md)
 [![Readme RU](https://img.shields.io/badge/README-RU-blue.svg)](https://github.com/bespredel/encryption-form/blob/master/README_RU.md)
@@ -10,12 +10,15 @@
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/bespredel/encryption-form.svg?logo=php&logoColor=white&color=777BB4)](https://php.net)
 [![Laravel Version](https://img.shields.io/badge/laravel-%3E%3D9-FF2D20?logo=laravel)](https://laravel.com)
 
-A Laravel package to securely encrypt form fields on the client-side using public key encryption and decrypt them on the server-side using the private
-key. This package integrates seamlessly with Laravel Blade templates and requires minimal configuration.
+🔐 Protect sensitive form data before it leaves the browser
+
+EncryptionForm is a lightweight solution for encrypting form data on the client side before sending it to the server.
+
+It helps protect sensitive information such as **passwords, personal data, and confidential inputs from interception.**
 
 ---
 
-## Features
+## ✨ Features
 
 - **RSA Encryption**: Uses `JSEncrypt` for secure RSA encryption.
 - **HTML Attribute Control**: Specify which fields to encrypt using `data-encrypt="true"`.
@@ -24,7 +27,29 @@ key. This package integrates seamlessly with Laravel Blade templates and require
 - **Simple Key Management**: Easily configure keys via `.env` or generate new keys via artisan commands.
 - **Zero Dependencies**: No NPM required; all scripts are included in the package.
 
-## Installation
+---
+
+## 🚀 Use Cases
+
+- Login & authentication forms
+- Payment / sensitive input fields
+- Personal data collection forms
+- Secure admin panels
+- API request protection
+
+---
+
+## 🧠 How It Works
+
+1. User fills the form
+2. Data is encrypted in the browser
+3. Encrypted payload is sent to server
+4. Server decrypts the data
+5. Application processes secure input
+
+---
+
+## 📦 Installation
 
 1. **Install the Package**:
    ```bash
@@ -48,7 +73,9 @@ key. This package integrates seamlessly with Laravel Blade templates and require
 4. **Include the Blade Directive in Your Template**:
    Add `@encryptFormScripts` to your layout file or specific views where forms are encrypted.
 
-## Usage
+---
+
+## 🚀 Usage
 
 ### Middleware
 
@@ -154,7 +181,9 @@ openssl_private_decrypt($decodedValue, $decryptedData, $privateKey);
 echo $decryptedData; // Output the decrypted value
 ```
 
-## Commands
+---
+
+## ⚡ Commands
 
 ### Generate New RSA Keys
 
@@ -166,7 +195,9 @@ php artisan encryption-form:generate-keys
 
 This will update the keys in your `.env` file.
 
-## Configuration
+---
+
+## ⚙️ Configuration
 
 ### Config File:
 
@@ -187,7 +218,7 @@ return [
 ];
 ```
 
-## Key Rotation via Scheduler
+### Key Rotation via Scheduler
 
 You can schedule automatic key rotation via the `key_rotation` key in the config file.:
 
@@ -201,7 +232,9 @@ return [
 ];
 ```
 
-## Contributing
+---
+
+## 🤝 Contributing
 
 1. Fork the repository.
 2. Create your feature branch: `git checkout -b feature/my-feature`.
@@ -209,17 +242,29 @@ return [
 4. Push to the branch: `git push origin feature/my-feature`.
 5. Open a pull request.
 
-## Security
+---
+
+## 🛡 Security
 
 PLEASE DON'T DISCLOSE SECURITY-RELATED ISSUES PUBLICLY.
 
 If you discover any security related issues, please email [hello@bespredel.name](hello@bespredel.name) instead of using the issue tracker.
 
-## Acknowledgements
+---
+
+## 🙏 Acknowledgements
 
 I would like to thank the authors and contributors of the [JSEncrypt](https://github.com/travist/jsencrypt) library for providing a secure RSA
 encryption solution for client-side data encryption.
 
-## License
+---
+
+## 📄 License
 
 This package is open-source software licensed under the MIT license.
+
+---
+
+## ⭐ Support
+
+If you find this project useful, give it a star ⭐
