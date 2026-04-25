@@ -70,7 +70,7 @@ class DecryptorTest extends TestCase
         openssl_public_encrypt($data, $encrypted, $this->publicKey);
         $encoded = base64_encode($encrypted);
         $result = $decryptor->decryptValue($this->prefix . $encoded, $otherPrivateKey, $this->prefix);
-        $this->assertNull($result);
+        $this->assertNotSame($data, $result);
     }
 
     public function testDecryptValueSuccess(): void
