@@ -44,7 +44,7 @@ class GenerateEncryptionKeysTest extends TestCase
         } finally {
             if ($backup !== null) {
                 File::put($envPath, $backup);
-            } elseif (File::exists($envPath)) {
+            } else {
                 File::delete($envPath);
             }
         }

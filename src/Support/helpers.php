@@ -18,7 +18,7 @@ if (!function_exists('encryption_form_enabled')) {
             return false;
         }
 
-        $ip = request()?->ip();
+        $ip = request()->ip();
         $skip = config('encryption-form.skip_for_ips', []);
 
         foreach ($skip as $pattern) {
