@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "illuminate/support:^12.0" "orchestra/testbench:^10.0" --no-update
+          composer require --dev "illuminate/support:^12.0" "orchestra/testbench:^10.0" --no-update
           composer update --prefer-stable --no-interaction --no-progress
 
       - name: Run lint
@@ -84,13 +84,13 @@ jobs:
       - name: Install dependencies
         run: |
           if [ "${{ matrix.laravel }}" = "9" ]; then
-            composer require "illuminate/support:^9.0" "orchestra/testbench:^7.0" --no-update
+            composer require --dev "illuminate/support:^9.0" "orchestra/testbench:^7.0" --no-update
           elif [ "${{ matrix.laravel }}" = "10" ]; then
-            composer require "illuminate/support:^10.48" "orchestra/testbench:^8.0" --no-update
+            composer require --dev "illuminate/support:^10.48" "orchestra/testbench:^8.0" --no-update
           elif [ "${{ matrix.laravel }}" = "11" ]; then
-            composer require "illuminate/support:^11.0" "orchestra/testbench:^9.0" --no-update
+            composer require --dev "illuminate/support:^11.0" "orchestra/testbench:^9.0" --no-update
           else
-            composer require "illuminate/support:^12.0" "orchestra/testbench:^10.0" --no-update
+            composer require --dev "illuminate/support:^12.0" "orchestra/testbench:^10.0" --no-update
           fi
           composer update --prefer-stable --no-interaction --no-progress
 
