@@ -5,6 +5,32 @@ on:
   pull_request:
 
 jobs:
+  quality:
+    name: Quality checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, openssl
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer require "illuminate/support:^12.0" "orchestra/testbench:^10.0" --no-update
+          composer update --prefer-stable --no-interaction --no-progress
+
+      - name: Run lint
+        run: composer lint
+
+      - name: Run static analysis
+        run: composer analyse
+
   tests:
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
     runs-on: ubuntu-latest

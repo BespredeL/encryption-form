@@ -25,6 +25,11 @@ class GenerateEncryptionKeysTest extends TestCase
             File::put($envPath, "APP_KEY=test\n");
         }
 
+        File::put(
+            $envPath,
+            "APP_KEY=test\nENCRYPTION_FORM_PUBLIC_KEY=\"old\"\nENCRYPTION_FORM_PRIVATE_KEY=\"old\"\n"
+        );
+
         try {
             $this->artisan('encryption-form:generate-keys')
                 ->expectsOutputToContain('saved to .env')
@@ -35,6 +40,7 @@ class GenerateEncryptionKeysTest extends TestCase
             $this->assertStringContainsString('ENCRYPTION_FORM_PRIVATE_KEY=', $content);
             $this->assertStringContainsString('-----BEGIN PUBLIC KEY-----', $content);
             $this->assertStringContainsString('-----BEGIN PRIVATE KEY-----', $content);
+            $this->assertStringContainsString('\n', $content);
         } finally {
             if ($backup !== null) {
                 File::put($envPath, $backup);

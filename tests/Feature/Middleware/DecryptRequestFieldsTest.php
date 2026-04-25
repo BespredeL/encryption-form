@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bespredel\EncryptionForm\Tests\Feature\Middleware;
 
+use Bespredel\EncryptionForm\Exceptions\DecryptionException;
 use Bespredel\EncryptionForm\Services\Decryptor;
 use Bespredel\EncryptionForm\Tests\TestCase;
 use Illuminate\Http\Request;
@@ -32,6 +33,7 @@ class DecryptRequestFieldsTest extends TestCase
         Config::set('encryption-form.prefix', $this->prefix);
         Config::set('encryption-form.enabled', true);
         Config::set('encryption-form.skip_for_ips', []);
+        Config::set('encryption-form.strict_mode', false);
     }
 
     public function testMiddlewareDecryptsEncryptedFields(): void
@@ -110,5 +112,21 @@ class DecryptRequestFieldsTest extends TestCase
         $middleware->handle($request, $next);
 
         $this->assertSame('value', $request->input('field'));
+    }
+
+    public function testMiddlewareThrowsWhenStrictModeEnabledAndFieldCannotBeDecrypted(): void
+    {
+        Config::set('encryption-form.strict_mode', true);
+
+        $request = Request::create('/test', 'POST', ['name' => $this->prefix . 'invalid_base64_payload']);
+        $request->headers->set('REMOTE_ADDR', '192.168.1.1');
+
+        $middleware = app(\Bespredel\EncryptionForm\Middleware\DecryptRequestFields::class);
+        $next = function ($req) {
+            return $req;
+        };
+
+        $this->expectException(DecryptionException::class);
+        $middleware->handle($request, $next);
     }
 }

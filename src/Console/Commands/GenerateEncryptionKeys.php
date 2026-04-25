@@ -4,29 +4,47 @@ declare(strict_types=1);
 
 namespace Bespredel\EncryptionForm\Console\Commands;
 
+use Bespredel\EncryptionForm\Support\EnvEditor;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\File;
 
 class GenerateEncryptionKeys extends Command
 {
     /**
      * The name and signature of the console command.
      *
-     * @var string
+     * @var string Signature of the console command
      */
     protected $signature = 'encryption-form:generate-keys';
 
     /**
      * The console command description.
      *
-     * @var string
+     * @var string Description of the console command
      */
     protected $description = 'Create a new RSA key pair to encrypt the forms.';
 
     /**
+     * Env editor instance
+     *
+     * @var EnvEditor
+     */
+    private EnvEditor $envEditor;
+
+    /**
+     * Constructor
+     *
+     * @param EnvEditor $envEditor
+     */
+    public function __construct(EnvEditor $envEditor)
+    {
+        parent::__construct();
+        $this->envEditor = $envEditor;
+    }
+
+    /**
      * Execute the console command.
      *
-     * @return int
+     * @return int Exit code
      */
     public function handle(): int
     {
@@ -40,7 +58,11 @@ class GenerateEncryptionKeys extends Command
             return self::FAILURE;
         }
 
-        openssl_pkey_export($keyPair, $privateKey);
+        $privateKey = '';
+        if (!openssl_pkey_export($keyPair, $privateKey)) {
+            $this->error('Failed to export private key from key pair.');
+            return self::FAILURE;
+        }
 
         $keyDetails = openssl_pkey_get_details($keyPair);
         if ($keyDetails === false) {
@@ -61,42 +83,24 @@ class GenerateEncryptionKeys extends Command
     /**
      * Saving keys to a .env file
      *
-     * @param string $privateKey
-     * @param string $publicKey
+     * @param string $privateKey Private key
+     * @param string $publicKey  Public key
      *
-     * @return bool
+     * @return bool True if keys were saved successfully, false otherwise
      */
     protected function saveKeysToEnv(string $privateKey, string $publicKey): bool
     {
-        $envPath = base_path('.env');
+        $updated = $this->envEditor->upsert([
+            'ENCRYPTION_FORM_PUBLIC_KEY'  => $publicKey,
+            'ENCRYPTION_FORM_PRIVATE_KEY' => $privateKey,
+        ]);
 
-        if (!File::exists($envPath)) {
-            $this->error('The .env file does not exist or cannot be accessed.');
-            return false;
-        }
-
-        $envContent = File::get($envPath);
-
-        // Remove existing keys
-        $envContent = preg_replace('/\nENCRYPTION_FORM_PUBLIC_KEY="[^"]*"/m', '', $envContent);
-        $envContent = preg_replace('/\nENCRYPTION_FORM_PRIVATE_KEY="[^"]*"/m', '', $envContent);
-
-        // Add new public keys
-        if (!preg_match('/^ENCRYPTION_FORM_PUBLIC_KEY="/m', $envContent)) {
-            $envContent .= "\nENCRYPTION_FORM_PUBLIC_KEY=\"{$publicKey}\"";
-        }
-
-        // Add new private keys
-        if (!preg_match('/^ENCRYPTION_FORM_PRIVATE_KEY="/m', $envContent)) {
-            $envContent .= "\nENCRYPTION_FORM_PRIVATE_KEY=\"{$privateKey}\"";
-        }
-
-        if (!File::put($envPath, $envContent)) {
+        if (!$updated) {
             $this->error('Failed to write keys to .env file.');
             return false;
         }
 
-        $this->call('config:clear'); // Resetting the configuration cache
+        $this->call('config:clear');
 
         return true;
     }

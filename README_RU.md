@@ -194,6 +194,7 @@ php artisan encryption-form:generate-keys
 ```
 
 Это обновит ключи в вашем файле .env.
+Ключи сохраняются в экранированном многострочном формате, чтобы не ломать парсинг `.env`.
 
 ---
 
@@ -208,6 +209,7 @@ return [
    'public_key'   => env('ENCRYPTION_FORM_PUBLIC_KEY'), // Открытый ключ, обязателен
    'private_key'  => env('ENCRYPTION_FORM_PRIVATE_KEY'), // Закрытый ключ, обязателен
    'prefix'       => env('ENCRYPTION_FORM_PREFIX', 'ENCF:'), // Префикс значения поля, необходимый для оптимизации поиска зашифрованных значений, по умолчанию: 'ENCF:'
+   'strict_mode'  => env('ENCRYPTION_FORM_STRICT_MODE', false), // Бросать DecryptionException, если зашифрованные поля не удалось расшифровать
    'key_rotation' => [ // Настройка автоматической ротации ключей
       'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false), // Включить ротацию ключей
       'cron_expression' => '0 0 * * *', // Выражение Cron для ротации ключей
@@ -216,6 +218,14 @@ return [
        //'127.0.0.1',
     ],
 ];
+```
+
+### Проверки качества
+
+```bash
+composer lint
+composer analyse
+composer test
 ```
 
 ### Обновление ключей с помощью планировщика
