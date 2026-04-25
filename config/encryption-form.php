@@ -21,6 +21,9 @@ return [
     // Prefix for encrypted fields (used to identify encrypted data)
     'prefix'       => env('ENCRYPTION_FORM_PREFIX', 'ENCF:'),
 
+    // Throw decryption exception when encrypted fields fail to decrypt
+    'strict_mode'  => env('ENCRYPTION_FORM_STRICT_MODE', false),
+
     // Key rotation settings
     'key_rotation' => [
         // Enable or disable automatic key rotation

@@ -194,6 +194,7 @@ php artisan encryption-form:generate-keys
 ```
 
 This will update the keys in your `.env` file.
+Keys are saved as escaped multiline values to keep the `.env` file parse-safe.
 
 ---
 
@@ -208,6 +209,7 @@ return [
    'public_key'   => env('ENCRYPTION_FORM_PUBLIC_KEY'), // Public key, required
    'private_key'  => env('ENCRYPTION_FORM_PRIVATE_KEY'), // Private key, required
    'prefix'       => env('ENCRYPTION_FORM_PREFIX', 'ENCF:'), // Field value prefix, needed for optimization to find encrypted values, default: 'ENCF:'
+   'strict_mode'  => env('ENCRYPTION_FORM_STRICT_MODE', false), // Throw DecryptionException when encrypted fields fail to decrypt
    'key_rotation' => [ // Key automatic rotation configuration
       'enabled'         => env('ENCRYPTION_FORM_KEY_ROTATION_ENABLED', false), // Enable key rotation
       'cron_expression' => '0 0 * * *', // Cron expression for key rotation
@@ -216,6 +218,14 @@ return [
         //'127.0.0.1',
     ],
 ];
+```
+
+### Quality checks
+
+```bash
+composer lint
+composer analyse
+composer test
 ```
 
 ### Key Rotation via Scheduler

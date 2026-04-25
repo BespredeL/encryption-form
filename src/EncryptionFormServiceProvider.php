@@ -29,23 +29,11 @@ class EncryptionFormServiceProvider extends ServiceProvider
     {
         $langPath = $this->getLangPath('vendor/encryption-form');
 
-        $this->publishes([
-            __DIR__ . '/../config/encryption-form.php' => config_path('encryption-form.php'),
-            __DIR__ . '/../resources/js'               => public_path('vendor/encryption-form/js'),
-            __DIR__ . '/../resources/css'              => public_path('vendor/encryption-form/css'),
-            __DIR__ . '/../resources/lang'             => $langPath,
-        ], 'encryption-form');
-
-        // Registering the path to language files
-        if (!is_dir($langPath)) {
-            $langPath = __DIR__ . '/../resources/lang';
-        }
-        $this->loadTranslationsFrom($langPath, 'encryption-form');
-
+        $this->registerPublishGroups($langPath);
+        $this->loadPackageTranslations($langPath);
         $this->registerMiddleware($router);
         $this->registerCommands();
-
-        Directives::register();
+        $this->registerBladeDirectives();
     }
 
     /**
@@ -55,17 +43,10 @@ class EncryptionFormServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(DecryptorInterface::class, Decryptor::class);
-
         $this->mergeConfigFrom(__DIR__ . '/../config/encryption-form.php', 'encryption-form');
-
-        // Validate configuration if encryption is enabled
+        $this->registerBindings();
         $this->validateConfiguration();
-
-        // Registering helpers
-        if (file_exists(__DIR__ . '/Support/helpers.php')) {
-            require_once __DIR__ . '/Support/helpers.php';
-        }
+        $this->registerHelpers();
     }
 
     /**
@@ -132,12 +113,78 @@ class EncryptionFormServiceProvider extends ServiceProvider
         ]);
 
         if (config('encryption-form.enabled', true) && config('encryption-form.key_rotation.enabled', false)) {
-            $this->app->booted(function () {
+            $this->app->booted(function (): void {
                 app(Schedule::class)
                     ->command('encryption-form:generate-keys')
                     ->cron(config('encryption-form.key_rotation.cron_expression', '0 0 * * *'));
             });
         }
+    }
+
+    /**
+     * Register the bindings.
+     *
+     * @return void
+     */
+    protected function registerBindings(): void
+    {
+        $this->app->bind(DecryptorInterface::class, Decryptor::class);
+    }
+
+    /**
+     * Register the helpers.
+     *
+     * @return void
+     */
+    protected function registerHelpers(): void
+    {
+        if (file_exists(__DIR__ . '/Support/helpers.php')) {
+            require_once __DIR__ . '/Support/helpers.php';
+        }
+    }
+
+    /**
+     * Register the publish groups.
+     *
+     * @param string $langPath
+     *
+     * @return void
+     */
+    protected function registerPublishGroups(string $langPath): void
+    {
+        $this->publishes([
+            __DIR__ . '/../config/encryption-form.php' => config_path('encryption-form.php'),
+            __DIR__ . '/../resources/js'               => public_path('vendor/encryption-form/js'),
+            __DIR__ . '/../resources/css'              => public_path('vendor/encryption-form/css'),
+            __DIR__ . '/../resources/lang'             => $langPath,
+        ], 'encryption-form');
+    }
+
+    /**
+     * Load the package translations.
+     *
+     * @param string $langPath
+     *
+     * @return void
+     */
+    protected function loadPackageTranslations(string $langPath): void
+    {
+        if (!is_dir($langPath)) {
+            $langPath = __DIR__ . '/../resources/lang';
+        }
+
+        $this->loadTranslationsFrom($langPath, 'encryption-form');
+    }
+
+    /**
+     * Register the blade directives.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    protected function registerBladeDirectives(): void
+    {
+        Directives::register();
     }
 
     /**

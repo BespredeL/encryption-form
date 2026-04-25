@@ -20,30 +20,28 @@ class Decryptor implements DecryptorInterface
      */
     public function decryptValue(string $value, string $privateKey, string $encDataPrefix): ?string
     {
-        // Validate input
         if (empty($value)) {
-            Log::warning('Decryption attempted with empty value');
+            $this->logFailure('empty_value');
             return null;
         }
 
         if (empty($privateKey)) {
-            Log::warning('Decryption attempted with empty private key');
+            $this->logFailure('empty_private_key');
             return null;
         }
 
-        // Validate prefix
         if (!str_starts_with($value, $encDataPrefix)) {
-            Log::debug('Value does not start with encryption prefix', [
+            $this->logFailure('prefix_mismatch', [
                 'prefix'        => $encDataPrefix,
                 'value_preview' => substr($value, 0, 50),
-            ]);
+            ], 'debug');
             return null;
         }
 
         $res = openssl_pkey_get_private($privateKey);
         if (!$res) {
             $error = openssl_error_string();
-            Log::warning('Error parsing private key', [
+            $this->logFailure('invalid_private_key', [
                 'error' => $error,
             ]);
             return null;
@@ -51,7 +49,7 @@ class Decryptor implements DecryptorInterface
 
         $decodedValue = base64_decode((string)str($value)->after($encDataPrefix), true);
         if ($decodedValue === false) {
-            Log::warning('Failed to base64 decode value', [
+            $this->logFailure('invalid_base64_payload', [
                 'value_preview' => substr($value, 0, 50),
             ]);
             return null;
@@ -60,7 +58,7 @@ class Decryptor implements DecryptorInterface
         $decrypted = '';
         if (!openssl_private_decrypt($decodedValue, $decrypted, $res)) {
             $error = openssl_error_string();
-            Log::warning('Decryption failed for value', [
+            $this->logFailure('openssl_decrypt_failed', [
                 'error'         => $error,
                 'value_preview' => substr($value, 0, 50),
             ]);
@@ -82,11 +80,42 @@ class Decryptor implements DecryptorInterface
     public function decryptValues(array $fields, string $privateKey, string $encDataPrefix): array
     {
         return collect($fields)->mapWithKeys(function ($value, $key) use ($privateKey, $encDataPrefix) {
-            // Only process string values that start with the encryption prefix
             if (is_string($value) && str_starts_with($value, $encDataPrefix)) {
-                return [$key => $this->decryptValue($value, $privateKey, $encDataPrefix)];
+                $decrypted = $this->decryptValue($value, $privateKey, $encDataPrefix);
+
+                if ($decrypted === null) {
+                    $this->logFailure('field_decryption_failed', [
+                        'field' => (string)$key,
+                    ]);
+                }
+
+                return [$key => $decrypted];
             }
             return [$key => $value];
         })->toArray();
+    }
+
+    /**
+     * Log a decryption failure.
+     *
+     * @param string $reason  Reason for the failure
+     * @param array  $context Context for the failure
+     * @param string $level   Level of the failure
+     *
+     * @return void
+     */
+    private function logFailure(string $reason, array $context = [], string $level = 'warning'): void
+    {
+        $payload = array_merge([
+            'reason'  => $reason,
+            'service' => 'encryption-form.decryptor',
+        ], $context);
+
+        if ($level === 'debug') {
+            Log::debug('Encryption form decryption diagnostics', $payload);
+            return;
+        }
+
+        Log::warning('Encryption form decryption diagnostics', $payload);
     }
 }

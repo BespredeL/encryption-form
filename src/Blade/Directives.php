@@ -11,7 +11,7 @@ class Directives
     /**
      * Registering Blade Directives
      *
-     * @return void
+     * @return void Blade directives were registered successfully
      *
      * @throws \Exception
      */
